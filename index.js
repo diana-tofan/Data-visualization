@@ -139,16 +139,46 @@ d3.csv("cars.csv", function(error, data) {
       .attr("y", -9)
       .text(function(d) { return d; });
 
-  // Add and store a brush for each axis.
-  g.append("g")
-      .attr("class", "brush")
+    // Add and store a brush for each axis.
+    g.append("g")
+    .attr("class", "brush")
+    .each(function(d) {
+      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
+    })
+  .selectAll("rect")
+    .attr("x", -8)
+    .attr("width", 16);
+
+  const brushMode = d3.select('#brushMode');
+
+  d3.select('#btnReset').on('click', () => {
+    if (g) {
+      g.selectAll('.brush')
       .each(function(d) {
-        d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
-      })
-    .selectAll("rect")
-      .attr("x", -8)
-      .attr("width", 16);
+        d3.select(this)
+          .transition()
+          .duration(0)
+          .call(d.clear());
+      });
+    }
+  });
+
+  brushMode.on('change', function() {
+    switch(this.value) {
+    case 'None':
+      console.log(this.value);
+      // d3.selectAll(".brush").remove();
+      break;
+    case '2D-strums':
+      console.log(this.value);
+      break;
+    default:
+      console.log(this.value);
+      break;
+    }
+  });
 });
+
 
 function position(d) {
   var v = dragging[d];
@@ -161,7 +191,7 @@ function transition(g) {
 
 // Returns the path for a given data point.
 function path(d) {
-  return line(dimensions.map(function(p) { console.log(p); return [position(p), y[p](d[p])]; }));
+  return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
 }
 
 function brushstart() {
