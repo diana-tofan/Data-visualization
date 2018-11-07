@@ -20,6 +20,11 @@ var svg = d3.select("body").append("svg")
 // Load the data and visualization
 d3.csv("cars.csv", function(error, data) {
 
+  var e = document.getElementById("brushMode");
+  var strUser = e.options[e.selectedIndex].text;
+
+  console.log(strUser)
+
   // Extract the list of numerical dimensions and create a scale for each.
   x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
     return d != "name" && (y[d] = d3.scale.linear()
@@ -105,7 +110,7 @@ function transition(g) {
 
 // Returns the path for a given data point.
 function path(d) {
-  return line(dimensions.map(function(p) { console.log(p); return [position(p), y[p](d[p])]; }));
+  return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
 }
 
 function brushstart() {
