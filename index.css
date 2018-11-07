@@ -43,7 +43,6 @@ svg, pre {
   display: flex;
   flex: 1;
   justify-content: center;
-  /* margin: 2em 6em 2em 6em; */
 }
 
 .upload-button {
@@ -91,4 +90,38 @@ body {
 
 .dropdown {
   width: 100px;
+}
+
+.brushMode {
+  margin-left: 6em;
+  font-size: 0.9em;
+  color: white;
+}
+
+#btnReset, #btnReset:hover {
+  color: white;
+  border: solid 1px white; 
+  padding: 5px;
+  font-size: .8em;
+  border-radius: .5em;
+  outline: none;
+}
+
+#btnReset {
+  background: transparent;
+}
+
+#btnReset:hover {
+  background: #2f3438; 
+  /* linear-gradient(to right, rgba(173, 246, 255, .3), rgba(238, 255, 132, .3)); */
+  border-color: #3b4347;
+  cursor: pointer;
+}
+
+#brushMode {
+  background: #2f3438;
+  color: white;
+  border: none;
+  font-size: .9em;
+  outline: none;
 }

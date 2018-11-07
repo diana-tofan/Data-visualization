@@ -143,19 +143,11 @@ d3.csv("cars.csv", function(error, data) {
       .attr("y", -9)
       .text(function(d) { return d; });
 
-    // Add and store a brush for each axis.
-    g.append("g")
-    .attr("class", "brush")
-    .each(function(d) {
-      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
-    })
-  .selectAll("rect")
-    .attr("x", -8)
-    .attr("width", 16);
 
   const brushMode = d3.select('#brushMode');
 
-  d3.select('#btnReset').on('click', () => {
+  d3.select('#btnReset')
+    .on('click', () => {
     if (g) {
       g.selectAll('.brush')
       .each(function(d) {
@@ -165,13 +157,17 @@ d3.csv("cars.csv", function(error, data) {
           .call(d.clear());
       });
     }
-  });
+  })
+    .style('background', gradientHov)
 
   brushMode.on('change', function() {
     switch(this.value) {
     case 'None':
       console.log(this.value);
       // d3.selectAll(".brush").remove();
+      break;
+    case '1D-axes':
+      addBrush(g);
       break;
     case '2D-strums':
       console.log(this.value);
@@ -182,6 +178,18 @@ d3.csv("cars.csv", function(error, data) {
     }
   });
 });
+
+function addBrush(g) {
+   // Add and store a brush for each axis.
+   g.append("g")
+   .attr("class", "brush")
+   .each(function(d) {
+     d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
+   })
+ .selectAll("rect")
+   .attr("x", -8)
+   .attr("width", 16);
+}
 
 
 function position(d) {
