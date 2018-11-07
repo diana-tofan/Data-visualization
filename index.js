@@ -1,6 +1,6 @@
 var margin = {top: 30, right: 10, bottom: 10, left: 10},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 1400 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal().rangePoints([0, width], 1),
     y = {},
@@ -11,19 +11,35 @@ var line = d3.svg.line(),
     background,
     foreground;
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("body").select(".svg-elem").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  .append("g")
+    .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var defs = svg.append("defs");
+
+var gradient = defs.append("linearGradient")
+   .attr("id", "svgGradient")
+   .attr("x1", "0%")
+   .attr("x2", "100%")
+   .attr("y1", "0%")
+   .attr("y2", "100%");
+
+gradient.append("stop")
+   .attr('class', 'start')
+   .attr("offset", "0%")
+   .attr("stop-color", "#adf6ff")
+   .attr("stop-opacity", 0.4);
+
+gradient.append("stop")
+   .attr('class', 'end')
+   .attr("offset", "100%")
+   .attr("stop-color", "#eeff84")
+   .attr("stop-opacity", 0.4);
 
 // Load the data and visualization
 d3.csv("cars.csv", function(error, data) {
-
-  var e = document.getElementById("brushMode");
-  var strUser = e.options[e.selectedIndex].text;
-
-  console.log(strUser)
 
   // Extract the list of numerical dimensions and create a scale for each.
   x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
@@ -46,6 +62,8 @@ d3.csv("cars.csv", function(error, data) {
     .selectAll("path")
       .data(data)
     .enter().append("path")
+    .attr("stroke", "url(#svgGradient)")
+    .attr("fill", "none")
       .attr("d", path);
 
   // Add a group element for each dimension.
@@ -88,16 +106,46 @@ d3.csv("cars.csv", function(error, data) {
       .attr("y", -9)
       .text(function(d) { return d; });
 
-  // Add and store a brush for each axis.
-  g.append("g")
-      .attr("class", "brush")
+    // Add and store a brush for each axis.
+    g.append("g")
+    .attr("class", "brush")
+    .each(function(d) {
+      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
+    })
+  .selectAll("rect")
+    .attr("x", -8)
+    .attr("width", 16);
+
+  const brushMode = d3.select('#brushMode');
+
+  d3.select('#btnReset').on('click', () => {
+    if (g) {
+      g.selectAll('.brush')
       .each(function(d) {
-        d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
-      })
-    .selectAll("rect")
-      .attr("x", -8)
-      .attr("width", 16);
+        d3.select(this)
+          .transition()
+          .duration(0)
+          .call(d.clear());
+      });
+    }
+  });
+
+  brushMode.on('change', function() {
+    switch(this.value) {
+    case 'None':
+      console.log(this.value);
+      // d3.selectAll(".brush").remove();
+      break;
+    case '2D-strums':
+      console.log(this.value);
+      break;
+    default:
+      console.log(this.value);
+      break;
+    }
+  });
 });
+
 
 function position(d) {
   var v = dragging[d];
