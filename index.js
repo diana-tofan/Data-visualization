@@ -30,13 +30,32 @@ gradient.append("stop")
    .attr('class', 'start')
    .attr("offset", "0%")
    .attr("stop-color", "#adf6ff")
-   .attr("stop-opacity", 0.4);
+   .attr("stop-opacity", 0.3);
 
 gradient.append("stop")
    .attr('class', 'end')
    .attr("offset", "100%")
    .attr("stop-color", "#eeff84")
-   .attr("stop-opacity", 0.4);
+   .attr("stop-opacity", 0.3);
+
+   var gradientHov = defs.append("linearGradient")
+      .attr("id", "svgGradientHov")
+      .attr("x1", "0%")
+      .attr("x2", "100%")
+      .attr("y1", "0%")
+      .attr("y2", "100%");
+
+   gradientHov.append("stop")
+      .attr('class', 'start')
+      .attr("offset", "0%")
+      .attr("stop-color", "#adf6ff")
+      .attr("stop-opacity", 1);
+
+   gradientHov.append("stop")
+      .attr('class', 'end')
+      .attr("offset", "100%")
+      .attr("stop-color", "#eeff84")
+      .attr("stop-opacity", 1);
 
 // Load the data and visualization
 d3.csv("cars.csv", function(error, data) {
@@ -64,7 +83,21 @@ d3.csv("cars.csv", function(error, data) {
     .enter().append("path")
     .attr("stroke", "url(#svgGradient)")
     .attr("fill", "none")
-      .attr("d", path);
+      .attr("d", path)
+    .on("mouseover", function(d) {
+      d3.select(this)
+      .style("stroke", "url(#svgGradientHov)")
+      .style("opacity", 1)
+      .style("stroke-width", 3)
+      .style("cursor", "pointer")
+    })
+    .on("mouseout", function(d) {
+      d3.select(this)
+      .style("stroke", "")
+      .style("opacity", 0.3)
+      .style("stroke-width", 1)
+      .style("cursor", "default")
+    });
 
   // Add a group element for each dimension.
   var g = svg.selectAll(".dimension")
