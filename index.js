@@ -146,8 +146,7 @@ d3.csv("cars.csv", function(error, data) {
 
   const brushMode = d3.select('#brushMode');
 
-  d3.select('#btnReset')
-    .on('click', () => {
+  d3.select('#btnReset').on('click', () => {
     if (g) {
       g.selectAll('.brush')
       .each(function(d) {
@@ -157,8 +156,7 @@ d3.csv("cars.csv", function(error, data) {
           .call(d.clear());
       });
     }
-  })
-    .style('background', gradientHov)
+  });
 
   brushMode.on('change', function() {
     switch(this.value) {
