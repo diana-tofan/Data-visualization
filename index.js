@@ -38,24 +38,24 @@ gradient.append("stop")
    .attr("stop-color", "#eeff84")
    .attr("stop-opacity", 0.3);
 
-   var gradientHov = defs.append("linearGradient")
-      .attr("id", "svgGradientHov")
-      .attr("x1", "0%")
-      .attr("x2", "100%")
-      .attr("y1", "0%")
-      .attr("y2", "100%");
+var gradientHov = defs.append("linearGradient")
+  .attr("id", "svgGradientHov")
+  .attr("x1", "0%")
+  .attr("x2", "100%")
+  .attr("y1", "0%")
+  .attr("y2", "100%");
 
-   gradientHov.append("stop")
-      .attr('class', 'start')
-      .attr("offset", "0%")
-      .attr("stop-color", "#adf6ff")
-      .attr("stop-opacity", 1);
+gradientHov.append("stop")
+  .attr('class', 'start')
+  .attr("offset", "0%")
+  .attr("stop-color", "#adf6ff")
+  .attr("stop-opacity", 1);
 
-   gradientHov.append("stop")
-      .attr('class', 'end')
-      .attr("offset", "100%")
-      .attr("stop-color", "#eeff84")
-      .attr("stop-opacity", 1);
+gradientHov.append("stop")
+  .attr('class', 'end')
+  .attr("offset", "100%")
+  .attr("stop-color", "#eeff84")
+  .attr("stop-opacity", 1);
 
 // Load the data and visualization
 d3.csv("cars.csv", function(error, data) {
@@ -85,6 +85,8 @@ d3.csv("cars.csv", function(error, data) {
     .attr("fill", "none")
       .attr("d", path)
     .on("mouseover", function(d) {
+      d3.selectAll("path")
+        .style("opacity", 0.1)
       d3.select(this)
       .style("stroke", "url(#svgGradientHov)")
       .style("opacity", 1)
@@ -92,6 +94,8 @@ d3.csv("cars.csv", function(error, data) {
       .style("cursor", "pointer")
     })
     .on("mouseout", function(d) {
+      d3.selectAll("path")
+        .style("opacity", 0.3)
       d3.select(this)
       .style("stroke", "")
       .style("opacity", 0.3)
