@@ -148,13 +148,8 @@ d3.csv("cars.csv", function(error, data) {
 
   d3.select('#btnReset').on('click', () => {
     if (g) {
-      g.selectAll('.brush')
-      .each(function(d) {
-        d3.select(this)
-          .transition()
-          .duration(0)
-          .call(d.clear());
-      });
+      g.selectAll('.brush').remove();
+      drawLines(data);
     }
   });
 
@@ -189,6 +184,34 @@ function addBrush(g) {
    .attr("width", 16);
 }
 
+function drawLines(data) {
+  foreground = svg.append("g")
+    .attr("class", "foreground")
+      .selectAll("path")
+        .data(data)
+      .enter().append("path")
+      .attr("stroke", "url(#svgGradient)")
+      .attr("fill", "none")
+        .attr("d", path)
+      .on("mouseover", function(d) {
+        d3.selectAll("path")
+          .style("opacity", 0.1)
+        d3.select(this)
+        .style("stroke", "url(#svgGradientHov)")
+        .style("opacity", 1)
+        .style("stroke-width", 3)
+        .style("cursor", "pointer")
+      })
+      .on("mouseout", function(d) {
+        d3.selectAll("path")
+          .style("opacity", 0.3)
+        d3.select(this)
+        .style("stroke", "")
+        .style("opacity", 0.3)
+        .style("stroke-width", 1)
+        .style("cursor", "default")
+      });
+}
 
 function position(d) {
   var v = dragging[d];
