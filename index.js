@@ -57,6 +57,23 @@ gradientHov.append("stop")
   .attr("stop-color", "#eeff84")
   .attr("stop-opacity", 1);
 
+var reader = new FileReader();  
+  
+function loadFile() {   
+  var file = document.querySelector('input[type=file]').files[0];      
+  reader.addEventListener("load", parseFile, false);
+  if (file) {
+    reader.readAsText(file);
+  } 
+}
+
+function parseFile(){
+  var data = d3.csv.parse(reader.result, function(d){
+    return d;   
+  });
+  console.log(data);
+}
+
 // Load the data and visualization
 d3.csv("cars.csv", function(error, data) {
 
