@@ -21,14 +21,17 @@ svg, pre {
 .header {
   align-items: center;
   display: flex;
-  /* background: rgb(36,30,113); */
-  height: 8%;
-  /* border-bottom: solid 1px #9e9e9e; */
-  /* box-shadow: 0px 1px 1px #d0d0d0; */
+  background: #2f3438;
+  height: 7%;
+  font-size: .8em;
+  margin-bottom: 20px;
 }
 
 .title {
-  color: #eeff84;
+  background: linear-gradient(to right, #adf6ff, #eeff84);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: .9;
   font-family: 'Raleway';
   font-size: 1.05em;
   font-weight: bold;
@@ -166,28 +169,24 @@ label > span {
   vertical-align: middle;
   fill: currentColor;
   margin-top: -0.25em;
-  /* 4px */
   margin-right: 0.25em;
-  /* 4px */
 }
 
-/* 
-.filepond--drop-label {
-  color: white !important;
-  font-family: 'Noto Sans', sans-serif;
+.section2 {
+  margin-bottom: 10px;
 }
 
-.filepond--drop-label label {
+.dimension {
+  margin: 10px 20px;
+  background: #3b4347;
   border: solid 2px #4c575d;
-  border-radius: 6px;
   padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  font-size: .8em;
 }
 
-.filepond--item {
-  width: 20%;
-  margin: 0 4em !important;
-}
-
-.filepond--file {
+.selectedDimension {
   background: #4c575d;
-} */
+}
