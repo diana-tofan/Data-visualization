@@ -20,6 +20,9 @@ function parseFile(){
     return d;   
   });
   columns = d3.keys(data[0]);
+  d3.select(".section2").selectAll("*").remove();
+  d3.select("svg").remove();
+  chosenDimensions = [];
   d3.select(".section2")
     .append("p")
     .text("Choose dimensions");
@@ -70,57 +73,62 @@ function createSvg() {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const defs = svg.append("defs");
+  // const defs = svg.append("defs");
 
-  const gradient = defs.append("linearGradient")
-    .attr("id", "svgGradient")
-    .attr("x1", "0%")
-    .attr("x2", "100%")
-    .attr("y1", "0%")
-    .attr("y2", "100%");
+  // const gradient = defs.append("linearGradient")
+  //   .attr("id", "svgGradient")
+  //   .attr("x1", "0%")
+  //   .attr("x2", "100%")
+  //   .attr("y1", "0%")
+  //   .attr("y2", "100%");
 
-  gradient.append("stop")
-    .attr('class', 'start')
-    .attr("offset", "0%")
-    .attr("stop-color", "#adf6ff")
-    .attr("stop-opacity", 0.3);
+  // gradient.append("stop")
+  //   .attr('class', 'start')
+  //   .attr("offset", "0%")
+  //   .attr("stop-color", "#adf6ff")
+  //   .attr("stop-opacity", 0.3);
 
-  gradient.append("stop")
-    .attr('class', 'end')
-    .attr("offset", "100%")
-    .attr("stop-color", "#eeff84")
-    .attr("stop-opacity", 0.3);
+  // gradient.append("stop")
+  //   .attr('class', 'end')
+  //   .attr("offset", "100%")
+  //   .attr("stop-color", "#eeff84")
+  //   .attr("stop-opacity", 0.3);
 
-  const gradientHov = defs.append("linearGradient")
-    .attr("id", "svgGradientHov")
-    .attr("x1", "0%")
-    .attr("x2", "100%")
-    .attr("y1", "0%")
-    .attr("y2", "100%");
+  // const gradientHov = defs.append("linearGradient")
+  //   .attr("id", "svgGradientHov")
+  //   .attr("x1", "0%")
+  //   .attr("x2", "100%")
+  //   .attr("y1", "0%")
+  //   .attr("y2", "100%");
 
-  gradientHov.append("stop")
-    .attr('class', 'start')
-    .attr("offset", "0%")
-    .attr("stop-color", "#adf6ff")
-    .attr("stop-opacity", 1);
+  // gradientHov.append("stop")
+  //   .attr('class', 'start')
+  //   .attr("offset", "0%")
+  //   .attr("stop-color", "#adf6ff")
+  //   .attr("stop-opacity", 1);
 
-  gradientHov.append("stop")
-    .attr('class', 'end')
-    .attr("offset", "100%")
-    .attr("stop-color", "#eeff84")
-    .attr("stop-opacity", 1);
+  // gradientHov.append("stop")
+  //   .attr('class', 'end')
+  //   .attr("offset", "100%")
+  //   .attr("stop-color", "#eeff84")
+  //   .attr("stop-opacity", 1);
 }
 
 function drawParallelCoordinates() {
   createSvg();
 
   // Extract the list of numerical dimensions and create a scale for each.
-  x.domain(dimensions = columns.filter(function(d) {
+  x.domain(dimensions = chosenDimensions.filter(function(d) {
     return d != "name" && (y[d] = d3.scale.linear()
         .domain(d3.extent(data, function(p) { return +p[d]; }))
         .range([height, 0]));
   }).sort());
   
+  var f = d3.interpolateHsl('#adf6ff', '#eeff84');
+  var colors = [];
+  var nColors = data.length;
+  for (var i=0; i<nColors; i++)
+    colors.push(f(i/(nColors-1)));
 
   // Add grey background lines for context.
   const background = svg.append("g")
@@ -128,7 +136,9 @@ function drawParallelCoordinates() {
     .selectAll("path")
       .data(data)
     .enter().append("path")
-      .attr("d", path);
+      .attr("d", path)
+      .attr("stroke", "#4c575d")
+      .attr("opacity", 0.2);
 
   // Add blue foreground lines for focus.
   const foreground = svg.append("g")
@@ -136,24 +146,26 @@ function drawParallelCoordinates() {
     .selectAll("path")
       .data(data)
     .enter().append("path")
-    .attr("stroke", "url(#svgGradient)")
+    .attr("stroke", function(d, i) {
+      return colors[i];
+    })
     .attr("fill", "none")
       .attr("d", path)
-    .on("mouseover", function(d) {
+    .on("mouseover", function(d, i) {
       d3.selectAll("path")
-        .style("opacity", 0.1)
+        .style("opacity", 0.005)
       d3.select(this)
-      .style("stroke", "url(#svgGradientHov)")
+      .style("stroke", colors[i])
       .style("opacity", 1)
       .style("stroke-width", 3)
       .style("cursor", "pointer")
     })
     .on("mouseout", function(d) {
       d3.selectAll("path")
-        .style("opacity", 0.3)
+        .style("opacity", 0.2)
       d3.select(this)
       .style("stroke", "")
-      .style("opacity", 0.3)
+      .style("opacity", 0.2)
       .style("stroke-width", 1)
       .style("cursor", "default")
     });
