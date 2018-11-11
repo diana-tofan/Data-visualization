@@ -1,0 +1,25 @@
+table { 
+  color: white;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1.2em;
+  margin: auto;
+  width: 90%; 
+  border-collapse: collapse; 
+  border-radius: 6px;
+}
+
+th { 
+  background: transparent; 
+  color: white; 
+  font-weight: bold;
+}
+  
+td, th { 
+  padding: 6px; 
+  border: solid 2px #4c575d;
+  text-align: left; 
+}
+
+.hoveredRow {
+  background: #4c575d;
+}

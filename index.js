@@ -22,10 +22,22 @@ function parseFile(){
     d.lineClicked = false;
     return d;
   });
-  columns = d3.keys(data[0]);x
+
+  columns = d3.keys(data[0]).filter(item => item !== "lineClicked");
+
+  // Keep only columns with numerical values
+  var nestedData = d3.keys(data[0]).map(item => {
+    const nested = d3.nest()
+      .key(d => d[item])
+      .entries(data);
+    const numericalData = nested.filter(i => !isNaN(i.key));
+    if (numericalData.length === 0) {
+      columns = columns.filter(column => column !== item)
+    }
+  })
+
   d3.select(".section2").selectAll("*").remove();
   d3.select("svg").remove();
-  chosenDimensions = [];
   d3.select(".section2")
     .append("p")
     .text("Choose dimensions");
@@ -37,7 +49,11 @@ function parseFile(){
       return d;
     })
     .style("color", "white")
-    .attr("class", "dimension");
+    .attr("class", "dimension")
+    .classed("selectedDimension", true);
+  
+  chosenDimensions = columns;
+  drawParallelCoordinates();
 
   d3.selectAll(".dimension").on("click", function() {
     d3.select("svg").remove();
@@ -79,20 +95,6 @@ function createSvg() {
 
 function drawParallelCoordinates() {
   createSvg();
-
-  // x.domain(dimensions = chosenDimensions.filter(function(d) {
-  //   if(d === "name" || d === 'group') {
-  //       y[d] = d3.scale.ordinal()
-  //         .domain(data.map(function(p, i) { return p[d]; }))
-  //         .rangePoints([height, 0]);
-  //   }
-  //   else {
-  //       y[d] = d3.scale.linear()
-  //         .domain(d3.extent(data, function(p) { return +p[d]; }))
-  //         .range([height, 0]);
-  //   }
-  //   return true;
-  // }));
 
   x.domain(dimensions = chosenDimensions.filter(function(d) {
     return d != "name" && d != "lineClicked" && (y[d] = d3.scale.linear()
@@ -137,7 +139,6 @@ function drawParallelCoordinates() {
         .style("opacity", 1)
         .style("stroke-width", 3)
         .style("cursor", "pointer")
-        d3.select(".data-name").append("p").text(d.name)
       }
     })
     .on("mouseout", function(d) {
@@ -149,10 +150,10 @@ function drawParallelCoordinates() {
         .style("opacity", 0.2)
         .style("stroke-width", 1)
         .style("cursor", "default")
-        d3.select("data-name").selectAll("*").remove();
       }
     })
     .on("click", function(d, i) {
+      d3.select("table").remove();
       d.lineClicked = !d.lineClicked;
       if (selectedLines.filter(e => e.name === d.name).length > 0) {
         selectedLines.pop(d)
@@ -173,7 +174,7 @@ function drawParallelCoordinates() {
         .style("opacity", 0.005)
         .style("stroke-width", 1)
       }
-      d3.select(".data-name").append("p").text(d.name)
+      drawTable(selectedLines);
     });
 
   // Add a group element for each dimension.
@@ -341,5 +342,43 @@ function hideTicks() {
       d3.select(element)
         .selectAll('.label')
         .style('display', null);
+    });
+}
+
+function drawTable(data) {
+  var table = d3.select('.table').append('table');
+  var titles = d3.keys(data[0]);
+  var headers = table.append('thead').append('tr')
+                  .selectAll('th')
+                  .data(titles).enter()
+                  .append('th')
+                  .text(function (d) {
+                    return d;
+                  });
+  
+  var rows = table.append('tbody').selectAll('tr')
+               .data(data).enter()
+               .append('tr')
+               .on("mouseover", () => {
+                 const row = d3.select("tbody").select("tr");
+                 row.classed("hoveredRow", true)
+                    .style("cursor", "pointer");
+               })
+               .on("mouseout", () => {
+                  const row = d3.select("tbody").select("tr");
+                  row.classed("hoveredRow", false);
+               })
+  rows.selectAll('td')
+    .data(function (d) {
+      return titles.map(function (k) {
+        return { 'value': d[k], 'name': k};
+      });
+    }).enter()
+    .append('td')
+    .attr('data-th', function (d) {
+      return d.name;
+    })
+    .text(function (d) {
+      return d.value;
     });
 }
