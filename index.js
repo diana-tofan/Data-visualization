@@ -1,23 +1,27 @@
 //----------------------------------------------------------------------------------------
-//  READ INPUT FILE                                                                        
+//  READ INPUT FILE
 //----------------------------------------------------------------------------------------
-const reader = new FileReader();  
+const reader = new FileReader();
 
 let chosenDimensions = [];
 let data = [];
 let columns = [];
-  
-function loadFile() {   
-  const file = document.querySelector("input[type=file]").files[0];      
+
+var anyLineClicked = false;
+var selectedLines = [];
+
+function loadFile() {
+  const file = document.querySelector("input[type=file]").files[0];
   reader.addEventListener("load", parseFile, false);
   if (file) {
     reader.readAsText(file);
-  } 
+  }
 }
 
 function parseFile(){
   data = d3.csv.parse(reader.result, function(d){
-    return d;   
+    d.lineClicked = false;
+    return d;
   });
   columns = d3.keys(data[0]);
   d3.select(".section2").selectAll("*").remove();
@@ -44,7 +48,7 @@ function parseFile(){
       chosenDimensions = chosenDimensions.filter(item => !dimension.text().includes(item));
       drawParallelCoordinates();
     } else {
-      dimension.classed("selectedDimension", true);    
+      dimension.classed("selectedDimension", true);
       chosenDimensions.push(dimension.text());
       drawParallelCoordinates();
     }
@@ -52,7 +56,7 @@ function parseFile(){
 }
 
 //----------------------------------------------------------------------------------------
-//  RENDER PARALLEL COORDINATES                                                                        
+//  RENDER PARALLEL COORDINATES
 //----------------------------------------------------------------------------------------
 
 const margin = {top: 30, right: 10, bottom: 10, left: 10},
@@ -123,7 +127,7 @@ function drawParallelCoordinates() {
         .domain(d3.extent(data, function(p) { return +p[d]; }))
         .range([height, 0]));
   }).sort());
-  
+
   var f = d3.interpolateHsl('#adf6ff', '#eeff84');
   var colors = [];
   var nColors = data.length;
@@ -152,30 +156,44 @@ function drawParallelCoordinates() {
     .attr("fill", "none")
       .attr("d", path)
     .on("mouseover", function(d, i) {
-      d3.selectAll("path")
-<<<<<<< HEAD
-        // .style("transition", "opacity 0.2s linear")
-        .style("opacity", 0.1)
-      d3.select(this)
-      // .style("transition", "all 0.1s linear")
-      .style("stroke", "url(#svgGradientHov)")
-=======
-        .style("opacity", 0.005)
-      d3.select(this)
-      .style("stroke", colors[i])
->>>>>>> c6faf6d2ab1c700205c06b8f367f433ac74a3ee0
-      .style("opacity", 1)
-      .style("stroke-width", 3)
-      .style("cursor", "pointer")
+      if (anyLineClicked === false) {
+        d3.selectAll("path")
+          .style("opacity", 0.005)
+        d3.select(this)
+        .style("stroke", colors[i])
+        .style("opacity", 1)
+        .style("stroke-width", 3)
+        .style("cursor", "pointer")
+
+        d3.select(".data-name").append("p").text(d.name)
+      }
     })
     .on("mouseout", function(d) {
-      d3.selectAll("path")
+      if (anyLineClicked === false) {
+        d3.selectAll("path")
+          .style("opacity", 0.2)
+        d3.select(this)
+        .style("stroke", "")
         .style("opacity", 0.2)
-      d3.select(this)
-      .style("stroke", "")
-      .style("opacity", 0.2)
-      .style("stroke-width", 1)
-      .style("cursor", "default")
+        .style("stroke-width", 1)
+        .style("cursor", "default")
+
+        d3.select(".data-name").selectAll("*").remove();
+      }
+    })
+    .on("click", function(d, i) {
+      d.lineClicked = !d.lineClicked;
+      anyLineClicked = !anyLineClicked;
+      if (selectedLines.filter(e => e.name === d.name).length > 0) {
+        selectedLines.pop(d)
+      }
+      else {
+        selectedLines.push(d)
+      }
+      selectedLines.forEach(line => {
+        d3.select()
+      })
+      console.log(selectedLines)
     });
 
   // Add a group element for each dimension.
@@ -268,6 +286,9 @@ function drawLines(data) {
       .attr("stroke", "url(#svgGradient)")
       .attr("fill", "none")
         .attr("d", path)
+        .attr("id", function(d) {
+          return "line-" + d.id
+        })
       .on("mouseover", function(d) {
         d3.selectAll("path")
           .style("opacity", 0.1)
@@ -305,6 +326,7 @@ function path(d) {
 function brushStart() {
   d3.event.sourceEvent.stopPropagation();
 }
+
 
 // Handles a brush event, toggling the display of foreground lines.
 function brush() {

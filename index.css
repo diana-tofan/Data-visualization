@@ -10,6 +10,14 @@ body {
   background-color: #3b4347;
 }
 
+#tooltip { 
+	font-family: sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color:black;
+}
+
+
 .svg-elem {
   text-align: center;
 }
@@ -104,7 +112,7 @@ body {
 
 #btnReset, #btnReset:hover {
   color: white;
-  border: solid 1px white; 
+  border: solid 1px white;
   padding: 5px;
   font-size: .8em;
   border-radius: .5em;
@@ -116,7 +124,7 @@ body {
 }
 
 #btnReset:hover {
-  background: #2f3438; 
+  background: #2f3438;
   /* linear-gradient(to right, rgba(173, 246, 255, .3), rgba(238, 255, 132, .3)); */
   border-color: #3b4347;
   cursor: pointer;
@@ -128,6 +136,22 @@ body {
   border: none;
   font-size: .9em;
   outline: none;
+}
+
+.line-clicked {
+  opacity: 1;
+  color: red !important;
+}
+
+.data-name {
+  font-size: 10px;
+  color: white;
+  visibility: visible;
+  /* height: 50px; */
+}
+
+.data-name p {
+
 }
 
 .inputFile {
