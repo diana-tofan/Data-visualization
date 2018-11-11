@@ -1,22 +1,37 @@
 <html>
   <head>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   </head>
   <body>
     <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
     <header class="header">
-      <!-- <span class="title">
-          Data visualization project
-      </span> -->
+      <div class="title">Advanced Project in Digital Media Engineering</div>
     </header>
-    <div class="svg-elem"></div>
-    <script src="./index.js"></script>
-    <p>
-      <label for="brushMode">Brush mode:</label>
-      <select id="brushMode">
-      <option>None</option><option>1D-axes</option><option>2D-strums</option><option>1D-axes-multi</option></select>
-      <button id="btnReset">Reset Brushes</button>
-    </p>
-
+    <div class="content">
+      <div class="section">
+          <div>Load your data</div>
+          <div>
+              <input type="file" name="file" id="file" onchange="loadFile()" class="inputFile" />
+              <label for="file">
+                  <i class="fa fa-upload"></i>
+                  <span>Choose a file...</span>
+              </label>
+          </div>
+        </div>
+        <div class="section section2">
+        </div>
+        <div class="svg-elem"></div>
+        <script src="./index.js"></script>
+        <p class="brushMode">
+          <label for="brushMode">Brush mode:</label>
+          <select id="brushMode">
+          <option>None</option><option>1D-axes</option><option>2D-strums</option><option>1D-axes-multi</option></select>
+          <button id="btnReset">Reset Brushes</button>
+        </p>
+    </div>
+  <script src="./uploadFile.js"></script>
   </body>
 </html>

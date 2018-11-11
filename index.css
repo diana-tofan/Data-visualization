@@ -2,8 +2,6 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 
 body {
-  /* background: rgb(36,30,113); */
-  /* background: linear-gradient(180deg, rgba(36,30,113,1) 0%, rgba(41,30,112,1) 34%, rgba(65,30,101,1) 66%, rgba(90,43,113,1) 100%);  color: white; */
   display: flex;
   flex-direction: column;
   font-family: 'Noto Sans', sans-serif;
@@ -23,14 +21,17 @@ svg, pre {
 .header {
   align-items: center;
   display: flex;
-  /* background: rgb(36,30,113); */
-  height: 8%;
-  /* border-bottom: solid 1px #9e9e9e; */
-  /* box-shadow: 0px 1px 1px #d0d0d0; */
+  background: #2f3438;
+  height: 7%;
+  font-size: .8em;
+  margin-bottom: 20px;
 }
 
 .title {
-  color: #eeff84;
+  background: linear-gradient(to right, #adf6ff, #eeff84);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: .9;
   font-family: 'Raleway';
   font-size: 1.05em;
   font-weight: bold;
@@ -39,11 +40,13 @@ svg, pre {
 }
 
 .content {
-  color: #505050;
-  display: flex;
-  flex: 1;
+  color: white;
+  font-size: 0.9em;
   justify-content: center;
-  /* margin: 2em 6em 2em 6em; */
+}
+
+.section {
+  margin: 0 6em;
 }
 
 .upload-button {
@@ -91,4 +94,99 @@ body {
 
 .dropdown {
   width: 100px;
+}
+
+.brushMode {
+  margin-left: 6em;
+  font-size: 0.9em;
+  color: white;
+}
+
+#btnReset, #btnReset:hover {
+  color: white;
+  border: solid 1px white; 
+  padding: 5px;
+  font-size: .8em;
+  border-radius: .5em;
+  outline: none;
+}
+
+#btnReset {
+  background: transparent;
+}
+
+#btnReset:hover {
+  background: #2f3438; 
+  /* linear-gradient(to right, rgba(173, 246, 255, .3), rgba(238, 255, 132, .3)); */
+  border-color: #3b4347;
+  cursor: pointer;
+}
+
+#brushMode {
+  background: #2f3438;
+  color: white;
+  border: none;
+  font-size: .9em;
+  outline: none;
+}
+
+.inputFile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputFile + label {
+  max-width: 15%;
+  font-size: .9em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.625rem 1.25rem;
+  color: white;
+  border: solid 2px #4c575d;
+  border-radius: 6px;
+  margin: 10px 0 20px 0;
+}
+
+label > span {
+  margin-left: 10px;
+}
+
+.inputFile:focus + label,
+.inputFile + label:hover {
+  background-color: #4c575d;
+}
+
+.inputFile + label svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  fill: currentColor;
+  margin-top: -0.25em;
+  margin-right: 0.25em;
+}
+
+.section2 {
+  margin-bottom: 10px;
+}
+
+.dimension {
+  margin: 10px 20px;
+  background: #3b4347;
+  border: solid 2px #4c575d;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  font-size: .8em;
+}
+
+.selectedDimension {
+  background: #4c575d;
 }
