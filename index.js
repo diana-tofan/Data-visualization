@@ -19,11 +19,7 @@ function parseFile(){
   data = d3.csv.parse(reader.result, function(d){
     return d;   
   });
-  columns = d3.keys(data[0]);
-  const entries = d3.nest()
-    .key(d => d.year);
-    
-  console.log(data);
+  columns = d3.keys(data[0]);x
   d3.select(".section2").selectAll("*").remove();
   d3.select("svg").remove();
   chosenDimensions = [];
@@ -117,6 +113,9 @@ function drawParallelCoordinates() {
       .attr("stroke", "#4c575d")
       .attr("opacity", 0.2);
 
+  let clicked = false;
+  let clickedLines = [];
+
   // Add blue foreground lines for focus.
   const foreground = svg.append("g")
       .attr("class", "foreground")
@@ -129,23 +128,44 @@ function drawParallelCoordinates() {
     .attr("fill", "none")
       .attr("d", path)
     .on("mouseover", function(d, i) {
-      d3.selectAll("path")
+      if (!clicked) {
+        d3.selectAll("path")
         .style("opacity", 0.005)
       d3.select(this)
       .style("stroke", colors[i])
       .style("opacity", 1)
       .style("stroke-width", 3)
       .style("cursor", "pointer")
+      }
     })
     .on("mouseout", function(d) {
-      d3.selectAll("path")
+      if (!clicked) {
+        d3.selectAll("path")
         .style("opacity", 0.2)
       d3.select(this)
       .style("stroke", "")
       .style("opacity", 0.2)
       .style("stroke-width", 1)
       .style("cursor", "default")
-    });
+      }
+    })
+    .on("click", function(d, i) {
+      console.log(d);
+      console.log("clicked!")
+      clickedLines.push(d);
+      clicked = !clicked;
+        d3.selectAll("path")
+          .style("opacity", 0.005);
+        d3.select("path")
+          .on("click", () => {
+            console.log('click')
+          });
+        d3.select(this)
+        .style("stroke", colors[i])
+        .style("opacity", 1)
+        .style("stroke-width", 3)
+        .style("cursor", "pointer")
+    })
 
   // Add a group element for each dimension.
   const g = svg.selectAll(".dimension")
@@ -284,4 +304,29 @@ function brush() {
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
     }) ? null : "none";
   });
+}
+
+function hideTicks() {
+  // hack to hide ticks beyond extent
+  var b = d3.selectAll('.dimension')[0]
+    .forEach(function(element, i) {
+      var dimension = d3.select(element).data()[0];
+        var extent = extents[actives.indexOf(dimension)];
+        d3.select(element)
+          .selectAll('text')
+          .style('font-weight', 'bold')
+          .style('font-size', '13px')
+          .style('display', function() { 
+            var value = d3.select(this).data();
+            return extent[0] <= value && value <= extent[1] ? null : "none"
+          });
+        d3.select(element)
+          .selectAll('text')
+          .style('font-size', null)
+          .style('font-weight', null)
+          .style('display', null);
+      d3.select(element)
+        .selectAll('.label')
+        .style('display', null);
+    });
 }
