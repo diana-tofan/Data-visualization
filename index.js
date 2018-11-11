@@ -86,8 +86,10 @@ d3.csv("cars.csv", function(error, data) {
       .attr("d", path)
     .on("mouseover", function(d) {
       d3.selectAll("path")
+        // .style("transition", "opacity 0.2s linear")
         .style("opacity", 0.1)
       d3.select(this)
+      // .style("transition", "all 0.1s linear")
       .style("stroke", "url(#svgGradientHov)")
       .style("opacity", 1)
       .style("stroke-width", 3)
