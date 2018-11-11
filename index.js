@@ -7,8 +7,6 @@ let chosenDimensions = [];
 let data = [];
 let columns = [];
 
-var selectedLines = [];
-
 function loadFile() {
   const file = document.querySelector("input[type=file]").files[0];
   reader.addEventListener("load", parseFile, false);
@@ -20,6 +18,7 @@ function loadFile() {
 function parseFile(){
   data = d3.csv.parse(reader.result, function(d) {
     d.lineClicked = false;
+    d.lineHovered = false;
     return d;
   });
 
@@ -93,8 +92,16 @@ function createSvg() {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
+
 function drawParallelCoordinates() {
+  d3.select(".loading-spinner")
+    .style("display", "unset");
+
   createSvg();
+
+  d3.select("table").remove();
+  let selectedLines = [];
+  let arr = [];
 
   x.domain(dimensions = chosenDimensions.filter(function(d) {
     return d != "name" && d != "lineClicked" && (y[d] = d3.scale.linear()
@@ -139,6 +146,9 @@ function drawParallelCoordinates() {
         .style("opacity", 1)
         .style("stroke-width", 3)
         .style("cursor", "pointer")
+        d3.select("table").remove();
+        arr.push(d);
+        drawTable(arr);
       }
     })
     .on("mouseout", function(d) {
@@ -150,18 +160,18 @@ function drawParallelCoordinates() {
         .style("opacity", 0.2)
         .style("stroke-width", 1)
         .style("cursor", "default")
+        d3.select("table").remove();
+        arr.pop();
       }
     })
     .on("click", function(d, i) {
       d3.select("table").remove();
       d.lineClicked = !d.lineClicked;
-      if (selectedLines.filter(e => e.name === d.name).length > 0) {
-        selectedLines.pop(d)
-      }
-      else {
+      if (selectedLines.filter(e => e === d).length > 0) {
+        selectedLines = selectedLines.filter(item => item !== d)
+      } else {
         selectedLines.push(d)
       }
-      console.log(selectedLines)
       if (d.lineClicked) {
         d3.select(this)
         .style("stroke", colors[i])
@@ -174,7 +184,23 @@ function drawParallelCoordinates() {
         .style("opacity", 0.005)
         .style("stroke-width", 1)
       }
-      drawTable(selectedLines);
+      if (selectedLines.length > 0) {
+        d3.select(".resetChart").select("button").remove();
+        console.log(selectedLines)
+        drawTable(selectedLines);
+        d3.select(".resetChart")
+          .append("button")
+          .text("Reset")
+          .style("cursor", "pointer")
+          .on("click", () => {
+            selectedLines = [];
+            d3.select(".resetChart").select("button").remove();
+            d3.select("svg").remove();
+            drawParallelCoordinates();
+          });    
+      } else {
+        d3.select("table").remove();
+      }
     });
 
   // Add a group element for each dimension.
@@ -234,6 +260,7 @@ function drawParallelCoordinates() {
       // d3.selectAll(".brush").remove();
       break;
     case '1D-axes':
+      console.log(this.value);
       addBrush(g);
       break;
     case '2D-strums':
@@ -244,6 +271,9 @@ function drawParallelCoordinates() {
       break;
     }
   });
+
+  d3.select(".loading-spinner")
+  .style("display", "none");
 }
 
 function addBrush(g) {
@@ -347,7 +377,7 @@ function hideTicks() {
 
 function drawTable(data) {
   var table = d3.select('.table').append('table');
-  var titles = d3.keys(data[0]);
+  var titles = d3.keys(data[0]).filter(item => item !== "lineClicked" && item !== "lineHovered"); //chosenDimensions;
   var headers = table.append('thead').append('tr')
                   .selectAll('th')
                   .data(titles).enter()
@@ -359,15 +389,17 @@ function drawTable(data) {
   var rows = table.append('tbody').selectAll('tr')
                .data(data).enter()
                .append('tr')
-               .on("mouseover", () => {
-                 const row = d3.select("tbody").select("tr");
-                 row.classed("hoveredRow", true)
-                    .style("cursor", "pointer");
-               })
-               .on("mouseout", () => {
+                .on("mouseover", d => {
+                  d.lineHovered = true;
+                  const row = d3.select("tbody").select("tr");
+                  row.classed("hoveredRow", true)
+                      .style("cursor", "pointer");
+                })
+                .on("mouseout", d => {
+                  d.lineHovered = false;
                   const row = d3.select("tbody").select("tr");
                   row.classed("hoveredRow", false);
-               })
+                })
   rows.selectAll('td')
     .data(function (d) {
       return titles.map(function (k) {
@@ -380,5 +412,5 @@ function drawTable(data) {
     })
     .text(function (d) {
       return d.value;
-    });
+    })
 }

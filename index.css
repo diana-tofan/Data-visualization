@@ -214,3 +214,24 @@ label > span {
 .selectedDimension {
   background: #4c575d;
 }
+
+.resetChart button,
+.resetChart button:hover {
+  cursor: pointer;
+  color: white;
+  border-radius: 6px;
+  padding: 7px 40px;
+  font-size: .9em;
+  border: solid 2px #4C575D;
+  margin: 20px auto;
+  display: flex;
+  outline: none;
+}
+
+.resetChart button {
+  background: transparent;
+}
+
+.resetChart button:hover {
+  background: #4C575D;
+}
