@@ -153,17 +153,9 @@ function drawParallelCoordinates() {
       .attr("d", path)
     .on("mouseover", function(d, i) {
       d3.selectAll("path")
-<<<<<<< HEAD
-        // .style("transition", "opacity 0.2s linear")
-        .style("opacity", 0.1)
-      d3.select(this)
-      // .style("transition", "all 0.1s linear")
-      .style("stroke", "url(#svgGradientHov)")
-=======
         .style("opacity", 0.005)
       d3.select(this)
       .style("stroke", colors[i])
->>>>>>> c6faf6d2ab1c700205c06b8f367f433ac74a3ee0
       .style("opacity", 1)
       .style("stroke-width", 3)
       .style("cursor", "pointer")
