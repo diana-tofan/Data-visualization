@@ -7,7 +7,6 @@ let chosenDimensions = [];
 let data = [];
 let columns = [];
 
-var anyLineClicked = false;
 var selectedLines = [];
 
 function loadFile() {
@@ -19,7 +18,7 @@ function loadFile() {
 }
 
 function parseFile(){
-  data = d3.csv.parse(reader.result, function(d){
+  data = d3.csv.parse(reader.result, function(d) {
     d.lineClicked = false;
     return d;
   });
@@ -96,7 +95,7 @@ function drawParallelCoordinates() {
   // }));
 
   x.domain(dimensions = chosenDimensions.filter(function(d) {
-    return d != "name" && (y[d] = d3.scale.linear()
+    return d != "name" && d != "lineClicked" && (y[d] = d3.scale.linear()
         .domain(d3.extent(data, function(p) { return +p[d]; }))
         .range([height, 0]));
   }).sort());
@@ -117,9 +116,6 @@ function drawParallelCoordinates() {
       .attr("stroke", "#4c575d")
       .attr("opacity", 0.2);
 
-  let clicked = false;
-  let clickedLines = [];
-
   // Add blue foreground lines for focus.
   const foreground = svg.append("g")
       .attr("class", "foreground")
@@ -132,20 +128,20 @@ function drawParallelCoordinates() {
     .attr("fill", "none")
       .attr("d", path)
     .on("mouseover", function(d, i) {
-      if (anyLineClicked === false) {
+      if (selectedLines.length < 1) {
         d3.selectAll("path")
           .style("opacity", 0.005)
+          .style("cursor", "pointer")
         d3.select(this)
         .style("stroke", colors[i])
         .style("opacity", 1)
         .style("stroke-width", 3)
         .style("cursor", "pointer")
-
         d3.select(".data-name").append("p").text(d.name)
       }
     })
     .on("mouseout", function(d) {
-      if (anyLineClicked === false) {
+      if (selectedLines.length < 1) {
         d3.selectAll("path")
           .style("opacity", 0.2)
         d3.select(this)
@@ -153,23 +149,31 @@ function drawParallelCoordinates() {
         .style("opacity", 0.2)
         .style("stroke-width", 1)
         .style("cursor", "default")
-
-        d3.select(".data-name").selectAll("*").remove();
+        d3.select("data-name").selectAll("*").remove();
       }
     })
     .on("click", function(d, i) {
       d.lineClicked = !d.lineClicked;
-      anyLineClicked = !anyLineClicked;
       if (selectedLines.filter(e => e.name === d.name).length > 0) {
         selectedLines.pop(d)
       }
       else {
         selectedLines.push(d)
       }
-      selectedLines.forEach(line => {
-        d3.select()
-      })
       console.log(selectedLines)
+      if (d.lineClicked) {
+        d3.select(this)
+        .style("stroke", colors[i])
+        .style("opacity", 1)
+        .style("stroke-width", 3)
+        .style("cursor", "pointer")
+      } else {
+        d3.select(this)
+        .style("stroke", "")
+        .style("opacity", 0.005)
+        .style("stroke-width", 1)
+      }
+      d3.select(".data-name").append("p").text(d.name)
     });
 
   // Add a group element for each dimension.
