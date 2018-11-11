@@ -20,6 +20,10 @@ function parseFile(){
     return d;   
   });
   columns = d3.keys(data[0]);
+  const entries = d3.nest()
+    .key(d => d.year);
+    
+  console.log(data);
   d3.select(".section2").selectAll("*").remove();
   d3.select("svg").remove();
   chosenDimensions = [];
@@ -72,52 +76,25 @@ function createSvg() {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  // const defs = svg.append("defs");
-
-  // const gradient = defs.append("linearGradient")
-  //   .attr("id", "svgGradient")
-  //   .attr("x1", "0%")
-  //   .attr("x2", "100%")
-  //   .attr("y1", "0%")
-  //   .attr("y2", "100%");
-
-  // gradient.append("stop")
-  //   .attr('class', 'start')
-  //   .attr("offset", "0%")
-  //   .attr("stop-color", "#adf6ff")
-  //   .attr("stop-opacity", 0.3);
-
-  // gradient.append("stop")
-  //   .attr('class', 'end')
-  //   .attr("offset", "100%")
-  //   .attr("stop-color", "#eeff84")
-  //   .attr("stop-opacity", 0.3);
-
-  // const gradientHov = defs.append("linearGradient")
-  //   .attr("id", "svgGradientHov")
-  //   .attr("x1", "0%")
-  //   .attr("x2", "100%")
-  //   .attr("y1", "0%")
-  //   .attr("y2", "100%");
-
-  // gradientHov.append("stop")
-  //   .attr('class', 'start')
-  //   .attr("offset", "0%")
-  //   .attr("stop-color", "#adf6ff")
-  //   .attr("stop-opacity", 1);
-
-  // gradientHov.append("stop")
-  //   .attr('class', 'end')
-  //   .attr("offset", "100%")
-  //   .attr("stop-color", "#eeff84")
-  //   .attr("stop-opacity", 1);
 }
 
 function drawParallelCoordinates() {
   createSvg();
 
-  // Extract the list of numerical dimensions and create a scale for each.
+  // x.domain(dimensions = chosenDimensions.filter(function(d) {
+  //   if(d === "name" || d === 'group') {
+  //       y[d] = d3.scale.ordinal()
+  //         .domain(data.map(function(p, i) { return p[d]; }))
+  //         .rangePoints([height, 0]);
+  //   }
+  //   else {
+  //       y[d] = d3.scale.linear()
+  //         .domain(d3.extent(data, function(p) { return +p[d]; }))
+  //         .range([height, 0]);
+  //   }
+  //   return true;
+  // }));
+
   x.domain(dimensions = chosenDimensions.filter(function(d) {
     return d != "name" && (y[d] = d3.scale.linear()
         .domain(d3.extent(data, function(p) { return +p[d]; }))
