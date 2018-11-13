@@ -273,6 +273,10 @@ function drawParallelCoordinates() {
       console.log(this.value);
       addBrush(g);
       break;
+    case '1D-axes-multi':
+      addMultiBrush(g);
+      console.log(this.value);
+    break;
     case '2D-strums':
       console.log(this.value);
       break;
@@ -300,6 +304,38 @@ function addBrush(g) {
    .attr("x", -8)
    .attr("width", 16);
 }
+
+function addMultiBrush(g) {
+  // Add and store a brush for each axis.
+  g.append("svg:g")
+      .attr("class", "brush")
+      .each(function(d) {
+				d3.select(this).call(y[d].brush = d3.svg.multibrush()
+					.extentAdaption(resizeExtent)
+					.y(y[d]).on("brush", multiBrush));
+			})
+			.selectAll("rect").call(resizeExtent);
+}
+
+function resizeExtent(selection){
+	selection
+		.attr("x", -8)
+		.attr("width", 16);
+}
+
+// Handles a brush event, toggling the display of foreground lines.
+function multiBrush() {
+  var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
+      extents = actives.map(function(p) { return y[p].brush.extent(); });
+  foreground.style("display", function(d) {
+    return actives.every(function(p, i) {
+			return extents[i].some(function(e){
+				return e[0] <= d[p] && d[p] <= e[1];
+			});
+    }) ? null : "none";
+  });
+}
+
 
 function drawLines(data) {
   foreground = svg.append("g")
@@ -362,6 +398,19 @@ function brush() {
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
     }) ? null : "none";
   });
+}
+
+// Handles a brush event, toggling the display of foreground lines.
+function multiBrush() {
+  const actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
+  extents = actives.map(function(p) { return y[p].brush.extent(); });
+  foreground.style("display", function(d) {
+  return actives.every(function(p, i) {
+        return extents[i].some(function(e){
+            return e[0] <= d[p] && d[p] <= e[1];
+        });
+  }) ? null : "none";
+ });
 }
 
 function hideTicks() {
