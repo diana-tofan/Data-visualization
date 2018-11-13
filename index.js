@@ -253,15 +253,15 @@ function drawParallelCoordinates() {
       .style("text-anchor", "middle")
       .attr("y", -9)
       .text(function(d) { return d; });
-
+  
+  d3.select(".brushMode")
+      .style("opacity", 1);
 
   const brushMode = d3.select('#brushMode');
 
   d3.select('#btnReset').on('click', () => {
-    if (g) {
-      g.selectAll('.brush').remove();
-      drawParallelCoordinates();
-    }
+    d3.select("svg").remove();
+    drawParallelCoordinates();
   });
 
   brushMode.on('change', function() {
