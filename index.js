@@ -27,7 +27,7 @@ function parseFile(){
   columns = d3.keys(data[0]).filter(item => item !== "lineClicked");
 
   // Keep only columns with numerical values
-  var nestedData = d3.keys(data[0]).map(item => {
+  d3.keys(data[0]).map(item => {
     const nested = d3.nest()
       .key(d => d[item])
       .entries(data);
@@ -86,6 +86,10 @@ const x = d3.scale.ordinal().rangePoints([0, width], 1),
 const line = d3.svg.line(),
     axis = d3.svg.axis().orient("left");
 
+let background,
+    foreground,
+    isBrushingActive = false;
+
 function createSvg() {
   svg = d3.select("body").select(".svg-elem").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -118,7 +122,7 @@ function drawParallelCoordinates() {
     colors.push(f(i/(nColors-1)));
 
   // Add grey background lines for context.
-  const background = svg.append("g")
+  background = svg.append("g")
       .attr("class", "background")
     .selectAll("path")
       .data(data)
@@ -128,7 +132,7 @@ function drawParallelCoordinates() {
       .attr("opacity", 0.2);
 
   // Add blue foreground lines for focus.
-  const foreground = svg.append("g")
+  foreground = svg.append("g")
     .attr("class", "foreground")
     .selectAll("path")
       .data(data)
@@ -143,7 +147,7 @@ function drawParallelCoordinates() {
         })
     .on("mouseover", function(d, i) {
       //IF there are no selected lines
-      if (selectedLines.length < 1) {
+      if (!isBrushingActive && selectedLines.length < 1) {
         //select all lines
         d3.selectAll("path")
           .style("opacity", 0.005)
@@ -160,7 +164,7 @@ function drawParallelCoordinates() {
       }
     })
     .on("mouseout", function(d) {
-      if (selectedLines.length < 1) {
+      if (!isBrushingActive && selectedLines.length < 1) {
         d3.selectAll("path")
           .style("opacity", 0.2)
         d3.select(this)
@@ -227,7 +231,7 @@ function drawParallelCoordinates() {
           dragging[d] = Math.min(width, Math.max(0, d3.event.x));
           foreground.attr("d", path);
           dimensions.sort(function(a, b) { return position(a) - position(b); });
-          x.domain(dimensions);
+          x.domain(dimensions)
           g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
         })
         .on("dragend", function(d) {
@@ -269,7 +273,9 @@ function drawParallelCoordinates() {
       break;
     case '1D-axes':
       console.log(this.value);
+      isBrushingActive = true;
       addBrush(g);
+      isBrushingActive = false;
       break;
     case '2D-strums':
       console.log(this.value);
@@ -289,7 +295,7 @@ function addBrush(g) {
    g.append("g")
    .attr("class", "brush")
    .each(function(d) {
-     d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushStart", brushStart).on("brush", brush));
+     d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushStart).on("brush", brush));
    })
  .selectAll("rect")
    .attr("x", -8)
