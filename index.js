@@ -6,6 +6,7 @@ const reader = new FileReader();
 let chosenDimensions = [];
 let data = [];
 let columns = [];
+let selectedLines = [];
 
 function loadFile() {
   const file = document.querySelector("input[type=file]").files[0];
@@ -16,9 +17,10 @@ function loadFile() {
 }
 
 function parseFile(){
-  data = d3.csv.parse(reader.result, function(d) {
+  data = d3.csv.parse(reader.result, function(d, i) {
     d.lineClicked = false;
     d.lineHovered = false;
+    d.id = i;
     return d;
   });
 
@@ -100,7 +102,7 @@ function drawParallelCoordinates() {
   createSvg();
 
   d3.select("table").remove();
-  let selectedLines = [];
+
   let arr = [];
 
   x.domain(dimensions = chosenDimensions.filter(function(d) {
@@ -136,6 +138,9 @@ function drawParallelCoordinates() {
     })
     .attr("fill", "none")
       .attr("d", path)
+      .attr("id", function(d) {
+          return "line-" + d.id
+        })
     .on("mouseover", function(d, i) {
       //IF there are no selected lines
       if (selectedLines.length < 1) {
@@ -190,7 +195,6 @@ function drawParallelCoordinates() {
       //there is at least one selected line
       if (selectedLines.length > 0) {
         d3.select(".resetChart").select("button").remove();
-        console.log(selectedLines)
         drawTable(selectedLines);
         d3.select(".resetChart")
           .append("button")
@@ -380,9 +384,9 @@ function hideTicks() {
 }
 
 function drawTable(data) {
+  console.log(data)
   var table = d3.select('.table').append('table');
   var titles = d3.keys(data[0]).filter(item => item !== "lineClicked" && item !== "lineHovered"); //chosenDimensions;
-  console.log("titles", titles)
   var headers = table.append('thead').append('tr')
                   .selectAll('th')
                   .data(titles).enter()
@@ -395,16 +399,26 @@ function drawTable(data) {
                .data(data).enter()
                .append('tr')
                 .on("mouseover", d => {
+                  d3.select("#line-" + d.id).style("stroke", "pink");
+
+                  selectedLines.forEach(line => {
+                    console.log("line", line)
+                    d3.select("#line-" + line.id).style("opacity", 0.5)
+                  })
+                  d3.select("#line-" + d.id).style("opacity", 1);
+                  console.log(selectedLines)
                   d.lineHovered = true;
                   const row = d3.select("tbody").select("tr");
-                  row.classed("hoveredRow", true)
-                      .style("cursor", "pointer");
+                  row.classed("hoveredRow", true);
+                  console.log(row)
                 })
                 .on("mouseout", d => {
                   d.lineHovered = false;
+                  d3.select("#line-" + d.id).style("stroke", "");
                   const row = d3.select("tbody").select("tr");
                   row.classed("hoveredRow", false);
                 })
+
   rows.selectAll('td')
     .data(function (d) {
       return titles.map(function (k) {
