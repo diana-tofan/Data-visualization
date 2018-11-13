@@ -261,7 +261,7 @@ function drawParallelCoordinates() {
   d3.select('#btnReset').on('click', () => {
     if (g) {
       g.selectAll('.brush').remove();
-      drawLines(data);
+      drawParallelCoordinates();
     }
   });
 
@@ -269,13 +269,10 @@ function drawParallelCoordinates() {
     switch(this.value) {
     case 'None':
       console.log(this.value);
-      // d3.selectAll(".brush").remove();
       break;
     case '1D-axes':
       console.log(this.value);
-      isBrushingActive = true;
       addBrush(g);
-      isBrushingActive = false;
       break;
     case '2D-strums':
       console.log(this.value);
@@ -295,7 +292,10 @@ function addBrush(g) {
    g.append("g")
    .attr("class", "brush")
    .each(function(d) {
-     d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushStart).on("brush", brush));
+     d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d])
+     .on("brushstart", brushStart)
+     .on("brush", brush)
+     .on("brushend", () => isBrushingActive = false))
    })
  .selectAll("rect")
    .attr("x", -8)
@@ -349,6 +349,7 @@ function path(d) {
 }
 
 function brushStart() {
+  isBrushingActive = true;
   d3.event.sourceEvent.stopPropagation();
 }
 
