@@ -50,7 +50,7 @@ function parseFile(){
     .style("color", "white")
     .attr("class", "dimension")
     .classed("selectedDimension", true);
-  
+
   chosenDimensions = columns;
   drawParallelCoordinates();
 
@@ -127,7 +127,7 @@ function drawParallelCoordinates() {
 
   // Add blue foreground lines for focus.
   const foreground = svg.append("g")
-      .attr("class", "foreground")
+    .attr("class", "foreground")
     .selectAll("path")
       .data(data)
     .enter().append("path")
@@ -137,10 +137,13 @@ function drawParallelCoordinates() {
     .attr("fill", "none")
       .attr("d", path)
     .on("mouseover", function(d, i) {
+      //IF there are no selected lines
       if (selectedLines.length < 1) {
+        //select all lines
         d3.selectAll("path")
           .style("opacity", 0.005)
           .style("cursor", "pointer")
+        // select current line
         d3.select(this)
         .style("stroke", colors[i])
         .style("opacity", 1)
@@ -184,6 +187,7 @@ function drawParallelCoordinates() {
         .style("opacity", 0.005)
         .style("stroke-width", 1)
       }
+      //there is at least one selected line
       if (selectedLines.length > 0) {
         d3.select(".resetChart").select("button").remove();
         console.log(selectedLines)
@@ -197,7 +201,7 @@ function drawParallelCoordinates() {
             d3.select(".resetChart").select("button").remove();
             d3.select("svg").remove();
             drawParallelCoordinates();
-          });    
+          });
       } else {
         d3.select("table").remove();
       }
@@ -360,7 +364,7 @@ function hideTicks() {
           .selectAll('text')
           .style('font-weight', 'bold')
           .style('font-size', '13px')
-          .style('display', function() { 
+          .style('display', function() {
             var value = d3.select(this).data();
             return extent[0] <= value && value <= extent[1] ? null : "none"
           });
@@ -378,6 +382,7 @@ function hideTicks() {
 function drawTable(data) {
   var table = d3.select('.table').append('table');
   var titles = d3.keys(data[0]).filter(item => item !== "lineClicked" && item !== "lineHovered"); //chosenDimensions;
+  console.log("titles", titles)
   var headers = table.append('thead').append('tr')
                   .selectAll('th')
                   .data(titles).enter()
@@ -385,7 +390,7 @@ function drawTable(data) {
                   .text(function (d) {
                     return d;
                   });
-  
+
   var rows = table.append('tbody').selectAll('tr')
                .data(data).enter()
                .append('tr')
