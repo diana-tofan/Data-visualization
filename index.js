@@ -398,25 +398,29 @@ function drawTable(data) {
   var rows = table.append('tbody').selectAll('tr')
                .data(data).enter()
                .append('tr')
+               .attr("id", function(d) {
+                 return "row-" + d.id;
+               })
                 .on("mouseover", d => {
                   d3.select("#line-" + d.id).style("stroke", "pink");
-
                   selectedLines.forEach(line => {
                     console.log("line", line)
-                    d3.select("#line-" + line.id).style("opacity", 0.5)
+                    d3.select("#line-" + line.id).style("opacity", 0.35)
                   })
                   d3.select("#line-" + d.id).style("opacity", 1);
                   console.log(selectedLines)
                   d.lineHovered = true;
-                  const row = d3.select("tbody").select("tr");
-                  row.classed("hoveredRow", true);
-                  console.log(row)
+                  // const row = d3.select("tbody").select("tr");
+                  // row.classed("hoveredRow", true);
+                  d3.select("#row-" + d.id).style("background-color", "#4c575d")
+                  // console.log(row)
                 })
                 .on("mouseout", d => {
                   d.lineHovered = false;
                   d3.select("#line-" + d.id).style("stroke", "");
-                  const row = d3.select("tbody").select("tr");
-                  row.classed("hoveredRow", false);
+                  // const row = d3.select("tbody").select("tr");
+                  d3.select("#row-" + d.id).style("background-color", "#3B4347")
+                  // row.classed("hoveredRow", false);
                 })
 
   rows.selectAll('td')
