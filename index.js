@@ -417,6 +417,10 @@ function drawTable(data) {
                 })
                 .on("mouseout", d => {
                   d.lineHovered = false;
+                  selectedLines.forEach(line => {
+                    console.log("line", line)
+                    d3.select("#line-" + line.id).style("opacity", 1)
+                  })
                   d3.select("#line-" + d.id).style("stroke", "");
                   // const row = d3.select("tbody").select("tr");
                   d3.select("#row-" + d.id).style("background-color", "#3B4347")
