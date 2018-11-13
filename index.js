@@ -57,6 +57,8 @@ function parseFile(){
 
   d3.selectAll(".dimension").on("click", function() {
     d3.select("svg").remove();
+    d3.select(".resetChart").selectAll("*").remove();
+    selectedLines = [];
     const dimension = d3.select(this);
     if (dimension.classed("selectedDimension")) {
       dimension.classed("selectedDimension", false);
@@ -255,12 +257,14 @@ function drawParallelCoordinates() {
       .text(function(d) { return d; });
   
   d3.select(".brushMode")
-      .style("opacity", 1);
+      .style("display", "initial");
 
   const brushMode = d3.select('#brushMode');
 
   d3.select('#btnReset').on('click', () => {
+    d3.select(".resetChart").selectAll("*").remove();
     d3.select("svg").remove();
+    selectedLines = [];
     drawParallelCoordinates();
   });
 
@@ -311,8 +315,10 @@ function addMultiBrush(g) {
       .attr("class", "brush")
       .each(function(d) {
 				d3.select(this).call(y[d].brush = d3.svg.multibrush()
-					.extentAdaption(resizeExtent)
-					.y(y[d]).on("brush", multiBrush));
+          .extentAdaption(resizeExtent)
+          .y(y[d]).on("brushstart", () => isBrushingActive = true)
+          .y(y[d]).on("brush", multiBrush)
+          .y(y[d]).on("brushend", () => isBrushingActive = false));
 			})
 			.selectAll("rect").call(resizeExtent);
 }
