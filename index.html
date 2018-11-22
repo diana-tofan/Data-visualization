@@ -1,16 +1,17 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="tableStyling.css">
-    <link rel="stylesheet" href="spinnerStyling.css">
+    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="./styles/tableStyling.css">
+    <link rel="stylesheet" href="./styles/spinnerStyling.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   </head>
   <body>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://d3js.org/d3-color.v1.min.js"></script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-    <script src="./multibrush.js"></script>
+    <script src="./scripts/brushing/1Dmultibrush.js"></script>
+    <script src="./scripts/brushing/2Dlines.js"></script>
     <header class="header">
       <div class="title">Advanced Project in Digital Media Engineering</div>
     </header>
@@ -42,7 +43,7 @@
             <div class="sk-circle12 sk-circle"></div>
           </div>
         <div class="svg-elem"></div>
-        <script src="./index.js"></script>
+        <script src="./scripts/index.js"></script>
         <p class="brushMode">
           <label for="brushMode">Brush mode:</label>
           <select id="brushMode">
@@ -59,6 +60,6 @@
           <button onClick=hideTicks()>Hide ticks</button>
         </p> -->
     </div>
-  <script src="./uploadFile.js"></script>
+  <script src="./scripts/uploadFile.js"></script>
   </body>
 </html>

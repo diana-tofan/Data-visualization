@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
 @import url('https://fonts.googleapis.com/css?family=Raleway');
-
 body {
   display: flex;
   flex-direction: column;
@@ -10,19 +9,19 @@ body {
   background-color: #3b4347;
 }
 
-#tooltip { 
-	font-family: sans-serif;
-	font-size: 14px;
-	font-weight: bold;
-	color:black;
+#tooltip {
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
 }
-
 
 .svg-elem {
   text-align: center;
 }
 
-svg, pre {
+svg,
+pre {
   font-family: 'Noto Sans', sans-serif;
 }
 
@@ -111,7 +110,8 @@ body {
   color: white;
 }
 
-#btnReset, #btnReset:hover {
+#btnReset,
+#btnReset:hover {
   color: white;
   border: solid 2px #4c575d;
   padding: 4px 16px;
@@ -152,7 +152,6 @@ body {
   font-size: 10px;
   color: white;
   visibility: visible;
-  /* height: 50px; */
 }
 
 .inputFile {
@@ -164,7 +163,7 @@ body {
   z-index: -1;
 }
 
-.inputFile + label {
+.inputFile+label {
   max-width: 15%;
   font-size: .9em;
   text-overflow: ellipsis;
@@ -179,16 +178,16 @@ body {
   margin: 10px 0 20px 0;
 }
 
-label > span {
+label>span {
   margin-left: 10px;
 }
 
-.inputFile:focus + label,
-.inputFile + label:hover {
+.inputFile:focus+label,
+.inputFile+label:hover {
   background-color: #4c575d;
 }
 
-.inputFile + label svg {
+.inputFile+label svg {
   width: 1em;
   height: 1em;
   vertical-align: middle;
