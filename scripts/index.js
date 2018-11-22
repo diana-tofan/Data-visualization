@@ -265,7 +265,9 @@ function drawParallelCoordinates() {
     d3.select(".resetChart").selectAll("*").remove();
     d3.select("svg").remove();
     selectedLines = [];
+    document.getElementById("brushMode").value = 'None';
     drawParallelCoordinates();
+    resetBrushes();
   });
 
   brushMode.on('change', function() {
@@ -285,7 +287,8 @@ function drawParallelCoordinates() {
       drawStrums();
       console.log(this.value);
       break;
-    default:
+    case 'angular':
+      drawAngles();
       console.log(this.value);
       break;
     }
@@ -293,6 +296,11 @@ function drawParallelCoordinates() {
 
   d3.select(".loading-spinner")
   .style("display", "none");
+}
+
+function resetBrushes() {
+
+
 }
 
 function addBrush(g) {

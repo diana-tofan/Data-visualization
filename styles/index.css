@@ -235,3 +235,7 @@ label>span {
 .resetChart button:hover {
   background: #4C575D;
 }
+
+.arc {
+  fill: #9c9c9c !important;
+}

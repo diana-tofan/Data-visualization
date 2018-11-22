@@ -4,6 +4,12 @@ let strums = {},
 function drawStrums() {
   isBrushingActive = true;
 
+  d3.select("svg").select("g#strums").remove();
+  d3.select("svg").select("rect#strum-events").remove();
+  d3.select("svg").on("axesreorder.strums", undefined);
+  
+  strumRect = undefined;
+
   const drag = d3.behavior.drag();
 
   strums.active = undefined;
