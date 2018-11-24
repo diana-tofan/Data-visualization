@@ -221,7 +221,7 @@ function drawParallelCoordinates() {
   const g = svg.selectAll(".dimension")
       .data(dimensions)
     .enter().append("g")
-      .attr("class", "dimension")
+      .attr("class", "dimensionAxis")
       .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
       .call(d3.behavior.drag()
         .origin(function(d) { return {x: x(d)}; })
@@ -233,7 +233,7 @@ function drawParallelCoordinates() {
           dragging[d] = Math.min(width, Math.max(0, d3.event.x));
           foreground.attr("d", path);
           dimensions.sort(function(a, b) { return position(a) - position(b); });
-          x.domain(dimensions)
+          x.domain(dimensions);
           g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
         })
         .on("dragend", function(d) {
