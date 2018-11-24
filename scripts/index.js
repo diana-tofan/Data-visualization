@@ -84,7 +84,8 @@ const x = d3.scale.ordinal().rangePoints([0, width], 1),
     y = {},
     dragging = {};
 
-const line = d3.svg.line(),
+const line = d3.svg.line()
+    .interpolate("monotone"),
     axis = d3.svg.axis().orient("left");
 
 let background,
