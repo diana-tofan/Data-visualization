@@ -76,7 +76,6 @@ body {
 
 .foreground path {
   fill: none;
-  /* stroke: #adf6ff; */
   opacity: 0.3;
 }
 
@@ -89,7 +88,6 @@ body {
 .axis line,
 .axis path {
   fill: none;
-  stroke: #000;
   shape-rendering: crispEdges;
 }
 

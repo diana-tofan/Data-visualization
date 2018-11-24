@@ -42,11 +42,33 @@ function parseFile() {
     .append("p")
     .text("Choose dimensions");
   d3.select(".section2").selectAll("button")
-    .data(columns)
+    .data(columns.sort())
     .enter()
     .append("button")
     .text(function(d) {
       return d;
+    })
+    .on("mouseover", function(dim) {
+      d3.selectAll(".axis")
+        .attr("axisTitle", function(d) {
+          if (dim === d) {
+            d3.select(this).select("path")
+              .attr("opacity", "1")
+              .attr("stroke", "white")
+              .attr("stroke-width", "2px")
+          }
+        })
+    })
+    .on("mouseout", function(dim) {
+      d3.selectAll(".axis")
+        .attr("axisTitle", function(d) {
+          if (dim === d) {
+            d3.select(this).select("path")
+              .attr("opacity", "0.2")
+              .attr("stroke", "black")
+              .attr("stroke-width", "1px")
+          }
+        })
     })
     .style("color", "white")
     .attr("class", "dimension")
@@ -251,11 +273,20 @@ function drawParallelCoordinates() {
   // Add an axis and title.
   g.append("g")
       .attr("class", "axis")
+      .attr("axisTitle", function(d) {
+        return d;
+      })
       .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
     .append("text")
       .style("text-anchor", "middle")
       .attr("y", -9)
       .text(function(d) { return d; });
+
+  d3.selectAll(".axis")
+    .select("path")
+      .attr("opacity", "0.2")
+      .attr("stroke", "black")
+      .attr("stroke-width", "1px")
   
   d3.select(".brushMode")
       .style("display", "initial");
