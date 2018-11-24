@@ -16,7 +16,7 @@ function loadFile() {
   }
 }
 
-function parseFile(){
+function parseFile() {
   data = d3.csv.parse(reader.result, function(d, i) {
     d.lineClicked = false;
     d.id = i;
@@ -116,12 +116,12 @@ function drawParallelCoordinates() {
         .range([height, 0]));
   }).sort());
 
-  var f = d3.interpolateHsl('#adf6ff', '#eeff84');
+  var f = d3.interpolateHcl('#adf6ff', '#eeff84');
   var colors = [];
   var nColors = data.length;
   for (var i=0; i<nColors; i++)
     colors.push(f(i/(nColors-1)));
-
+    
   // Add grey background lines for context.
   background = svg.append("g")
       .attr("class", "background")
@@ -142,10 +142,10 @@ function drawParallelCoordinates() {
       return colors[i];
     })
     .attr("fill", "none")
-      .attr("d", path)
-      .attr("id", function(d) {
-          return "line-" + d.id
-        })
+    .attr("d", path)
+    .attr("id", function(d) {
+        return "line-" + d.id
+      })
     .on("mouseover", function(d, i) {
       //IF there are no selected lines
       if (!isBrushingActive && selectedLines.length < 1) {
