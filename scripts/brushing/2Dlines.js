@@ -1,7 +1,7 @@
 let strums = {},
   strumRect;
 
-function drawStrums() {
+function drawLines() {
   isBrushingActive = true;
 
   d3.select("svg").select("g#strums").remove();

@@ -3,7 +3,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./styles/index.css">
     <link rel="stylesheet" href="./styles/tableStyling.css">
-    <link rel="stylesheet" href="./styles/spinnerStyling.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   </head>
   <body>
@@ -15,6 +14,10 @@
     <script src="./scripts/brushing/angular.js"></script>
     <header class="header">
       <div class="title">Advanced Project in Digital Media Engineering</div>
+      <div class="icons">
+        <a href="https://github.com/diana-tofan/Data-visualization"> <i class="fab fa-github fa-2x"></i></a>
+        <a href="http://bl.ocks.org/d/3156751/cars.csv"> <i class="fas fa-arrow-alt-circle-down fa-2x"></i></a>
+      </div>
     </header>
     <div class="content">
       <div class="section">
@@ -29,38 +32,23 @@
         </div>
         <div class="section section2">
         </div>
-        <div class="sk-fading-circle loading-spinner">
-            <div class="sk-circle1 sk-circle"></div>
-            <div class="sk-circle2 sk-circle"></div>
-            <div class="sk-circle3 sk-circle"></div>
-            <div class="sk-circle4 sk-circle"></div>
-            <div class="sk-circle5 sk-circle"></div>
-            <div class="sk-circle6 sk-circle"></div>
-            <div class="sk-circle7 sk-circle"></div>
-            <div class="sk-circle8 sk-circle"></div>
-            <div class="sk-circle9 sk-circle"></div>
-            <div class="sk-circle10 sk-circle"></div>
-            <div class="sk-circle11 sk-circle"></div>
-            <div class="sk-circle12 sk-circle"></div>
-          </div>
         <div class="svg-elem"></div>
         <script src="./scripts/index.js"></script>
-        <p class="brushMode">
-          <label for="brushMode">Brush mode:</label>
-          <select id="brushMode">
-          <option>None</option>
-          <option>1D-axes</option>
-          <option>1D-axes-multi</option>
-          <option>2D-strums</option>
-          <option>angular</option>
-        </select>
-          <button id="btnReset"><i class="fas fa-undo"></i>Reset brushes</button>
-        </p>
+        <div class="extra">
+          <p class="brushMode">
+              <label for="brushMode">Brush mode:</label>
+              <select id="brushMode">
+              <option>None</option>
+              <option>Simple</option>
+              <option>Multiple</option>
+              <option>Lines</option>
+              <option>Angles</option>
+            </select>
+              <button id="btnReset"><i class="fas fa-undo"></i>Reset brushes</button>
+            </p>
+        </div>
         <div class="section data-name table"><p></p></div>
         <div class="resetChart"></div>
-        <!-- <p>
-          <button onClick=hideTicks()>Hide ticks</button>
-        </p> -->
     </div>
   <script src="./scripts/uploadFile.js"></script>
   </body>

@@ -28,10 +28,24 @@ pre {
 .header {
   align-items: center;
   display: flex;
+  justify-content: space-between;
   background: #2f3438;
   height: 7%;
   font-size: .8em;
   margin-bottom: 20px;
+}
+
+.icons {
+  margin-right: 6em;
+}
+
+.fa-github {
+  margin-right: 10px;
+}
+
+.fa-github,
+.fa-arrow-alt-circle-down {
+  color: white;
 }
 
 .title {
@@ -70,7 +84,6 @@ body {
 
 .background path {
   fill: none;
-  /* stroke: #ddd; */
   shape-rendering: crispEdges;
 }
 
@@ -103,7 +116,6 @@ body {
 
 .brushMode {
   display: none;
-  margin-left: 6em;
   font-size: .9em;
   color: white;
 }
@@ -236,4 +248,15 @@ label>span {
 
 .arc {
   fill: #9c9c9c !important;
+}
+
+.extra {
+  margin: 30px 9em 0 6em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.entriesCount {
+  color: #9db2bd;
 }

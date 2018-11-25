@@ -55,7 +55,9 @@ function parseFile() {
             d3.select(this).select("path")
               .attr("opacity", "1")
               .attr("stroke", "white")
-              .attr("stroke-width", "2px")
+              .attr("stroke-width", "2px");
+            d3.select(this)
+              .attr("font-weight", "600");
           }
         })
     })
@@ -66,7 +68,9 @@ function parseFile() {
             d3.select(this).select("path")
               .attr("opacity", "0.2")
               .attr("stroke", "black")
-              .attr("stroke-width", "1px")
+              .attr("stroke-width", "1px");
+            d3.select(this)
+              .attr("font-weight", "400");
           }
         })
     })
@@ -112,7 +116,8 @@ const line = d3.svg.line()
 
 let background,
     foreground,
-    isBrushingActive = false;
+    isBrushingActive = false,
+    isDraggingActive = false;
 
 function createSvg() {
   svg = d3.select("body").select(".svg-elem").append("svg")
@@ -130,6 +135,7 @@ function drawParallelCoordinates() {
   createSvg();
 
   d3.select("table").remove();
+  d3.select(".entriesCount").remove();
 
   let arr = [];
 
@@ -155,6 +161,8 @@ function drawParallelCoordinates() {
       .attr("stroke", "#4c575d")
       .attr("opacity", 0.2);
 
+  d3.selectAll(".brush").remove();
+
   // Add blue foreground lines for focus.
   foreground = svg.append("g")
     .attr("class", "foreground")
@@ -170,12 +178,14 @@ function drawParallelCoordinates() {
         return "line-" + d.id
       })
     .on("mouseover", function(d, i) {
+      const brushes = d3.selectAll(".brush")[0];
       //IF there are no selected lines
-      if (!isBrushingActive && selectedLines.length < 1) {
+      if (!isBrushingActive && selectedLines.length < 1 && !isDraggingActive) {
         //select all lines
-        d3.selectAll("path")
-          .style("opacity", 0.005)
-          .style("cursor", "pointer")
+       d3.selectAll("path")
+        .style("opacity", brushes.length < 1 && 0.005)
+        .style("cursor", "pointer")
+        .style("stroke", d => brushes.length > 0 && filteredData.includes(d) && "#4c575d");
         // select current line
         d3.select(this)
         .style("stroke", colors[i])
@@ -188,11 +198,13 @@ function drawParallelCoordinates() {
       }
     })
     .on("mouseout", function(d) {
+      const brushes = d3.selectAll(".brush")[0];
       if (!isBrushingActive && selectedLines.length < 1) {
         d3.selectAll("path")
           .style("opacity", 0.2)
+          .style("stroke", (d, i) => brushes.length > 0 && filteredData.includes(d) && colors[i]);
         d3.select(this)
-        .style("stroke", "")
+        .style("stroke", brushes.length > 0 ? "#4c575d" : "")
         .style("opacity", 0.2)
         .style("stroke-width", 1)
         .style("cursor", "default")
@@ -204,9 +216,9 @@ function drawParallelCoordinates() {
       d3.select("table").remove();
       d.lineClicked = !d.lineClicked;
       if (selectedLines.filter(e => e === d).length > 0) {
-        selectedLines = selectedLines.filter(item => item !== d)
+        selectedLines = selectedLines.filter(item => item !== d);
       } else {
-        selectedLines.push(d)
+        selectedLines.push(d);
       }
       if (d.lineClicked) {
         d3.select(this)
@@ -224,15 +236,32 @@ function drawParallelCoordinates() {
       if (selectedLines.length > 0) {
         d3.select(".resetChart").select("button").remove();
         drawTable(selectedLines);
+        updateCounter(selectedLines.length);
         d3.select(".resetChart")
           .append("button")
           .text("Reset")
           .style("cursor", "pointer")
           .on("click", () => {
-            selectedLines = [];
-            d3.select(".resetChart").select("button").remove();
-            d3.select("svg").remove();
-            drawParallelCoordinates();
+            const brushes = d3.selectAll(".brush")[0];
+            if (brushes.length < 1) {
+              selectedLines = [];
+              d3.select(".resetChart").select("button").remove();
+              d3.select("svg").remove();
+              drawParallelCoordinates();
+            } else {
+              selectedLines = [];
+              d3.select(".resetChart").select("button").remove();
+              d3.select("table").remove();
+              d3.selectAll("path")
+                .style("opacity", 0.2)
+                .style("cursor", "pointer")
+                .style("stroke-width", 1)
+                .style("stroke", function(d, i) {
+                  if (filteredData.includes(d)) 
+                    return colors[i];
+                });
+              updateCounter(filteredData.length);
+            }
           });
       } else {
         d3.select("table").remove();
@@ -248,6 +277,7 @@ function drawParallelCoordinates() {
       .call(d3.behavior.drag()
         .origin(function(d) { return {x: x(d)}; })
         .on("dragstart", function(d) {
+          isDraggingActive = true;
           dragging[d] = x(d);
           background.attr("visibility", "hidden");
         })
@@ -259,6 +289,7 @@ function drawParallelCoordinates() {
           g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
         })
         .on("dragend", function(d) {
+          isDraggingActive = false;
           delete dragging[d];
           transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
           transition(foreground).attr("d", path);
@@ -299,40 +330,38 @@ function drawParallelCoordinates() {
     selectedLines = [];
     document.getElementById("brushMode").value = 'None';
     drawParallelCoordinates();
-    resetBrushes();
+    // resetBrushes();
   });
 
   brushMode.on('change', function() {
     switch(this.value) {
     case 'None':
-      console.log(this.value);
+      // Do nothing
       break;
-    case '1D-axes':
-      console.log(this.value);
+    case 'Simple':
       addBrush(g);
       break;
-    case '1D-axes-multi':
+    case 'Multiple':
       addMultiBrush(g);
-      console.log(this.value);
     break;
-    case '2D-strums':
-      drawStrums();
-      console.log(this.value);
+    case 'Lines':
+      drawLines();
       break;
-    case 'angular':
+    case 'Angles':
       drawAngles();
-      console.log(this.value);
       break;
     }
   });
 
-  d3.select(".loading-spinner")
-  .style("display", "none");
+  d3.select(".extra")
+    .append("div")
+    .attr("class", "entriesCount")
+    .text(data.length + "/" + data.length + " entries");
 }
 
-function resetBrushes() {
-
-
+function updateCounter(length) {
+  d3.select(".entriesCount")
+    .text(length + "/" + data.length + " entries");
 }
 
 function addBrush(g) {
@@ -402,28 +431,38 @@ function brushStart() {
   d3.event.sourceEvent.stopPropagation();
 }
 
+let filteredData = [];
+
 // Handles a brush event, toggling the display of foreground lines.
 function brush() {
   const actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
       extents = actives.map(function(p) { return y[p].brush.extent(); });
+  filteredData = [];
   foreground.style("display", function(d) {
-    return actives.every(function(p, i) {
+    const fct = actives.every(function(p, i) {
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
     }) ? null : "none";
+    !fct && filteredData.push(d);
+    return fct;
   });
+  updateCounter(filteredData.length);
 }
 
 // Handles a brush event, toggling the display of foreground lines.
 function multiBrush() {
   const actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
   extents = actives.map(function(p) { return y[p].brush.extent(); });
+  filteredData = [];
   foreground.style("display", function(d) {
-  return actives.every(function(p, i) {
-        return extents[i].some(function(e){
-            return e[0] <= d[p] && d[p] <= e[1];
-        });
-  }) ? null : "none";
- });
+    const fct =  actives.every(function(p, i) {
+          return extents[i].some(function(e){
+              return e[0] <= d[p] && d[p] <= e[1];
+          });
+    }) ? null : "none";
+    !fct && filteredData.push(d);
+    return fct;
+  });
+ updateCounter(filteredData.length);
 }
 
 function hideTicks() {
@@ -453,7 +492,8 @@ function hideTicks() {
 
 function drawTable(data) {
   var table = d3.select('.table').append('table');
-  var titles = d3.keys(data[0]).filter(item => item !== "lineClicked" && item !== "id"); //chosenDimensions;
+  var titles = d3.keys(data[0]).filter(item => item !== "lineClicked" && item !== "id");
+  titles = titles.concat(["delete"]);
   var headers = table.append('thead').append('tr')
                   .selectAll('th')
                   .data(titles).enter()
@@ -469,7 +509,7 @@ function drawTable(data) {
                  return "row-" + d.id;
                })
                 .on("mouseover", d => {
-                  d3.select("#line-" + d.id).style("stroke", "pink");
+                  d3.select("#line-" + d.id).style("stroke", "white");
                   selectedLines.forEach(line => {
                     d3.select("#line-" + line.id).style("opacity", 0.35)
                   })
@@ -484,10 +524,12 @@ function drawTable(data) {
                   d3.select("#row-" + d.id).style("background-color", "#3B4347")
                 })
 
+  var node = [];
+
   rows.selectAll('td')
     .data(function (d) {
       return titles.map(function (k) {
-        return { 'value': d[k], 'name': k};
+        return { 'value': d[k], 'name': k}
       });
     }).enter()
     .append('td')
@@ -495,6 +537,6 @@ function drawTable(data) {
       return d.name;
     })
     .text(function (d) {
-      return d.value;
+        return d.value;
     })
 }
