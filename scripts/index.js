@@ -79,7 +79,7 @@ function parseFile() {
     .classed("selectedDimension", true);
 
   chosenDimensions = columns;
-  drawParallelCoordinates();
+  drawParallelCoordinates(data);
 
   d3.selectAll(".dimension").on("click", function() {
     d3.select("svg").remove();
@@ -89,11 +89,11 @@ function parseFile() {
     if (dimension.classed("selectedDimension")) {
       dimension.classed("selectedDimension", false);
       chosenDimensions = chosenDimensions.filter(item => !dimension.text().includes(item));
-      drawParallelCoordinates();
+      drawParallelCoordinates(data);
     } else {
       dimension.classed("selectedDimension", true);
       chosenDimensions.push(dimension.text());
-      drawParallelCoordinates();
+      drawParallelCoordinates(data);
     }
   });
 }
@@ -114,6 +114,8 @@ const line = d3.svg.line()
     .interpolate("monotone"),
     axis = d3.svg.axis().orient("left");
 
+let predicate = 'AND';
+
 let background,
     foreground,
     isBrushingActive = false,
@@ -128,7 +130,7 @@ function createSvg() {
 }
 
 
-function drawParallelCoordinates() {
+function drawParallelCoordinates(filteredData) {
   d3.select(".loading-spinner")
     .style("display", "unset");
 
@@ -136,19 +138,20 @@ function drawParallelCoordinates() {
 
   d3.select("table").remove();
   d3.select(".entriesCount").remove();
+  d3.select(".search-box").selectAll("button").remove();
   d3.selectAll(".brush").remove();
 
   let arr = [];
 
   x.domain(dimensions = chosenDimensions.filter(function(d) {
     return d != "name" && d != "lineClicked" && (y[d] = d3.scale.linear()
-        .domain(d3.extent(data, function(p) { return +p[d]; }))
+        .domain(d3.extent(filteredData, function(p) { return +p[d]; }))
         .range([height, 0]));
   }).sort());
 
   var f = d3.interpolateHcl('#adf6ff', '#eeff84');
   var colors = [];
-  var nColors = data.length;
+  var nColors = filteredData.length;
   for (var i=0; i<nColors; i++)
     colors.push(f(i/(nColors-1)));
     
@@ -156,7 +159,7 @@ function drawParallelCoordinates() {
   background = svg.append("g")
       .attr("class", "background")
     .selectAll("path")
-      .data(data)
+      .data(filteredData)
     .enter().append("path")
       .attr("d", path)
       .attr("stroke", "#4c575d")
@@ -166,7 +169,7 @@ function drawParallelCoordinates() {
   foreground = svg.append("g")
     .attr("class", "foreground")
     .selectAll("path")
-      .data(data)
+      .data(filteredData)
     .enter().append("path")
     .attr("stroke", function(d, i) {
       return colors[i];
@@ -182,7 +185,7 @@ function drawParallelCoordinates() {
       if (!isBrushingActive && selectedLines.length < 1 && !isDraggingActive) {
         //select all lines
        d3.selectAll("path")
-        .style("opacity", d => (brushes.length > 0 && filteredData.includes(d)) ? 0.05 : 0.005)
+        .style("opacity", d => (brushes.length > 0 && filteredData.includes(d)) ? 0.04 : 0.005)
         .style("cursor", "pointer")
         // select current line
         d3.select(this)
@@ -216,7 +219,7 @@ function drawParallelCoordinates() {
       } else {
         selectedLines.push(d);
       }
-      if (d.lineClicked) {
+      if (selectedLines.includes(d)) {
         d3.select(this)
         .style("stroke", colors[i])
         .style("opacity", 1)
@@ -243,7 +246,7 @@ function drawParallelCoordinates() {
               selectedLines = [];
               d3.select(".resetChart").select("button").remove();
               d3.select("svg").remove();
-              drawParallelCoordinates();
+              drawParallelCoordinates(data);
             } else {
               selectedLines = [];
               d3.select(".resetChart").select("button").remove();
@@ -303,7 +306,10 @@ function drawParallelCoordinates() {
       .attr("axisTitle", function(d) {
         return d;
       })
-      .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+      .each(function(d) { 
+        d3.select(this)
+        .transition().duration(500)
+        .call(axis.scale(y[d])); })
     .append("text")
       .style("text-anchor", "middle")
       .attr("y", -9)
@@ -317,16 +323,61 @@ function drawParallelCoordinates() {
   
   d3.select(".brushMode")
       .style("display", "initial");
+      
+  d3.select(".predicateMode")
+    .style("display", "initial");
 
   const brushMode = d3.select('#brushMode');
+  const predicateMode = d3.select('#predicateMode');
+
+  document.getElementById("brushMode").value = 'None';
+  document.getElementById("predicateMode").value = 'AND';
 
   d3.select('#btnReset').on('click', () => {
     d3.select(".resetChart").selectAll("*").remove();
     d3.select("svg").remove();
     selectedLines = [];
     document.getElementById("brushMode").value = 'None';
-    drawParallelCoordinates();
-    // resetBrushes();
+    document.getElementById("predicateMode").value = 'AND';
+    const d = filteredData || data;
+    drawParallelCoordinates(d);
+  });
+
+  predicateMode.on('change', function() {
+    switch(this.value) {
+      case 'AND':
+        predicate = 'AND';
+        const value = document.getElementById("brushMode").value;
+        value === 'Simple' && brush();
+        value === 'Multiple' && multiBrush();
+        if (value === 'Lines') {
+          brushed = selected();
+          renderBrushed(brushed);
+          updateCounter(brushed.length);
+        }
+        if (value === 'Angles') {
+          brushed = getSelectedLines();
+          renderBrushed(brushed);
+          updateCounter(brushed.length);
+        }
+      break;
+      case 'OR':
+        predicate = 'OR';
+        const val = document.getElementById("brushMode").value;
+        val === 'Simple' && brush();
+        val === 'Multiple' && multiBrush();
+        if (val === 'Lines') {
+          brushed = selected();
+          renderBrushed(brushed);
+          updateCounter(brushed.length);
+        }
+        if (val === 'Angles') {
+          brushed = getSelectedLines();
+          renderBrushed(brushed);
+          updateCounter(brushed.length);
+        }
+       break;
+    }
   });
 
   brushMode.on('change', function() {
@@ -352,7 +403,51 @@ function drawParallelCoordinates() {
   d3.select(".extra")
     .append("div")
     .attr("class", "entriesCount")
-    .text(data.length + "/" + data.length + " entries");
+    .text(filteredData.length + "/" + data.length + " entries");
+  
+  d3.select(".search-box").select("span").text("Search ");
+
+  d3.select(".fa-search")
+    .style("opacity", "1");
+
+  // Too much stuff, maybe worthless, idk yet
+  // d3.select(".search-box")
+  //   .append("button")
+  //   .attr("id", "btnReset")
+  //   .text("Keep")
+  //   .on("click", () => keep_data());
+  
+  // d3.select(".search-box")
+  //   .append("button")
+  //   .attr("id", "btnReset")
+  //   .text("Exclude")
+  //   .on("click", () => exclude_data());
+
+  // d3.select(".search-box")
+  //   .append("button")
+  //   .attr("id", "btnReset")
+  //   .text("Revert")
+  //   .on("click", () => {
+  //     d3.select("svg").remove();
+  //     drawParallelCoordinates(data);
+  //   });
+    
+  d3.select(".search-box").select("#search")
+    .style("opacity", "1")
+    .on("keyup", function() {
+      if (this.value.length > 0) {
+        filteredData = search(this.value);
+        d3.select("svg").remove();
+        drawParallelCoordinates(filteredData);
+      } else {
+        d3.select("svg").remove();
+        drawParallelCoordinates(data);
+      }
+    })
+}
+
+function search(keyword) {
+  return data.filter(item => item.name.toLowerCase().includes(keyword.toLowerCase()));
 }
 
 function updateCounter(length) {
@@ -368,7 +463,9 @@ function addBrush(g) {
      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d])
      .on("brushstart", brushStart)
      .on("brush", brush)
-     .on("brushend", () => isBrushingActive = false))
+     .on("brushend", () => {
+       isBrushingActive = false;
+      }))
    })
  .selectAll("rect")
    .attr("x", -8)
@@ -428,14 +525,22 @@ function brushStart() {
 }
 
 let filteredData = [];
-
+  
 // Handles a brush event, toggling the display of foreground lines.
 function brush() {
   const actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
       extents = actives.map(function(p) { return y[p].brush.extent(); });
   filteredData = [];
-  foreground.style("display", function(d) {
-    const fct = actives.every(function(p, i) {
+  predicate === 'AND' 
+  ? foreground.style("display", function(d) {
+      const fct = actives.every(function(p, i) {
+        return extents[i][0] <= d[p] && d[p] <= extents[i][1];
+      }) ? null : "none";
+      !fct && filteredData.push(d);
+      return fct;
+    })
+  : foreground.style("display", function(d) {
+    const fct = actives.some(function(p, i) {
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
     }) ? null : "none";
     !fct && filteredData.push(d);
@@ -444,13 +549,48 @@ function brush() {
   updateCounter(filteredData.length);
 }
 
+// Remove all but selected from the dataset
+function keep_data() {
+  if (filteredData.length > 0) {
+    rescale();
+  }
+  filteredData = [];
+}
+
+// Exclude selected from the dataset
+function exclude_data() {
+  const currentData = filteredData.length > 0 ? filteredData : data;
+  const newData = data.filter(item => !currentData.includes(item));
+  if (currentData.length > 0) {
+    d3.select("svg").remove();
+    drawParallelCoordinates(newData);
+  }
+  filteredData = [];
+}
+
+// Rescale to new dataset domain
+function rescale() {
+  d3.select("svg").remove();
+  drawParallelCoordinates(filteredData);
+}
+
 // Handles a brush event, toggling the display of foreground lines.
 function multiBrush() {
   const actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
   extents = actives.map(function(p) { return y[p].brush.extent(); });
   filteredData = [];
-  foreground.style("display", function(d) {
+  predicate === 'AND'
+  ? foreground.style("display", function(d) {
     const fct =  actives.every(function(p, i) {
+          return extents[i].some(function(e){
+              return e[0] <= d[p] && d[p] <= e[1];
+          });
+    }) ? null : "none";
+    !fct && filteredData.push(d);
+    return fct;
+  })
+  : foreground.style("display", function(d) {
+    const fct =  actives.some(function(p, i) {
           return extents[i].some(function(e){
               return e[0] <= d[p] && d[p] <= e[1];
           });
@@ -520,19 +660,23 @@ function drawTable(data) {
                   d3.select("#row-" + d.id).style("background-color", "#3B4347")
                 })
 
-  var node = [];
-
   rows.selectAll('td')
     .data(function (d) {
       return titles.map(function (k) {
-        return { 'value': d[k], 'name': k}
+        return { 'value': d[k], 'name': k, 'entity': d}
       });
     }).enter()
     .append('td')
     .attr('data-th', function (d) {
       return d.name;
     })
-    .text(function (d) {
-        return d.value;
-    })
-}
+    .text(d => d.value)
+    .append("i")
+      .attr("class", d => d.name === "delete" ? "fas fa-trash" : "")
+      .style("cursor", "pointer")
+      .on("click", (d, i) => {
+        const line = [].concat(d.entity);
+        selectedLines = selectedLines.filter(item => item !== line[0]);
+        console.log(selectedLines);
+      });
+  }

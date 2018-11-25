@@ -114,7 +114,8 @@ body {
   width: 100px;
 }
 
-.brushMode {
+.brushMode,
+.predicateMode {
   display: none;
   font-size: .9em;
   color: white;
@@ -144,7 +145,12 @@ body {
   background: #4c575d;
 }
 
-#brushMode {
+.predicateMode {
+  margin-left: 20px;
+}
+
+#brushMode,
+#predicateMode {
   background: #2f3438;
   color: white;
   border: none;
@@ -259,4 +265,47 @@ label>span {
 
 .entriesCount {
   color: #9db2bd;
+}
+
+.strum {
+  fill: white;
+}
+
+rect#strum-events {
+  fill: none;
+  pointer-events: all;
+}
+
+.search-box {
+  margin: 20px 0 20px 6em;
+  display: flex;
+  align-items: center;
+}
+
+.search-box span {
+  margin-right: 10px;
+}
+
+.search-box #search {
+  background: transparent;
+  border: solid 2px #4C575D;
+  padding: 10px;
+  width: 200px;
+  border-radius: 6px;
+  outline: none;
+  color: white;
+  opacity: 0;
+  height: 28px;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.fa-search {
+  position: absolute;
+  font-size: 12px;
+  top: 8px;
+  right: 0;
+  opacity: 0;
 }

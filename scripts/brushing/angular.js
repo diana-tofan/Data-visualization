@@ -31,7 +31,7 @@ function drawAngle(arc, activePoint) {
     .attr("y1", function(d) { return d.p1[1]; })
     .attr("x2", function(d) { return d.p2[0]; })
     .attr("y2", function(d) { return d.p2[1]; })
-    .attr("stroke", "black")
+    .attr("stroke", "white")
     .attr("stroke-width", 2);
 
   drag
@@ -231,20 +231,13 @@ function getSelectedLines() {
   }
 
   if (ids.length === 0) { return brushed; }
-
-  // return brushed.filter(function(d) {
-  //   switch(brush.predicate) {
-  //   case "AND":
-  //     return ids.every(function(id) { return crossesAngle(d, id); });
-  //   case "OR":
-  //     return ids.some(function(id) { return crossesAngle(d, id); });
-  //   default:
-  //     throw new Error("Unknown brush predicate " + __.brushPredicate);
-  //   }
-  // });
-
+ 
   return brushed.filter(function(d) {
-    return ids.every(function(id) { return crossesAngle(d, id); });
+    if (predicate === 'AND') {
+      return ids.every(function(id) { return crossesAngle(d, id); });
+    } else {
+      return ids.some(function(id) { return crossesAngle(d, id); });
+    }
   });
 }
 
@@ -285,8 +278,8 @@ function onDragAngleEnd() {
     brushed = getSelectedLines(arcs);
     arcs.active = undefined;
     renderBrushed(brushed);
+    updateCounter(brushed.length);
     isBrushingActive = false;
-    // events.brushend.call(d3.select("svg"), brushed);
   };
 }
 

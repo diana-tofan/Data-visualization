@@ -35,17 +35,30 @@
         <div class="svg-elem"></div>
         <script src="./scripts/index.js"></script>
         <div class="extra">
-          <p class="brushMode">
-              <label for="brushMode">Brush mode:</label>
-              <select id="brushMode">
-              <option>None</option>
-              <option>Simple</option>
-              <option>Multiple</option>
-              <option>Lines</option>
-              <option>Angles</option>
-            </select>
-              <button id="btnReset"><i class="fas fa-undo"></i>Reset brushes</button>
-            </p>
+          <div>
+              <p class="brushMode">
+                  <label for="brushMode">Brush mode:</label>
+                  <select id="brushMode">
+                    <option>None</option>
+                    <option>Simple</option>
+                    <option>Multiple</option>
+                    <option>Lines</option>
+                    <option>Angles</option>
+                  </select>
+                  <button id="btnReset"><i class="fas fa-undo"></i>Reset brushes</button>
+                </p>
+                <span class="predicateMode">
+                    <label for="predicateMode">Predicate:</label>
+                    <select id="predicateMode">
+                      <option>AND</option>
+                      <option>OR</option>
+                    </select>
+                </span>
+          </div>
+        </div>
+        <div class="search-box">
+          <span></span>
+          <div class="wrapper"><input type="text" id="search"><span class="fas fa-search"></span></div>
         </div>
         <div class="section data-name table"><p></p></div>
         <div class="resetChart"></div>

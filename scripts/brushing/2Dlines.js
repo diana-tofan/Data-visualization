@@ -165,7 +165,7 @@ function drawStrum(strum, activePoint) {
       return d.p2[0]; })
     .attr("y2", function(d) {
       return d.p2[1]; })
-    .attr("stroke", "black")
+    .attr("stroke", "white")
     .attr("stroke-width", 2);
 
   drag
@@ -201,8 +201,9 @@ function drawStrum(strum, activePoint) {
 
 function onDragEnd() {
   return function() {
+    data = filteredData.length > 0 ? filteredData : data;
     var brushed = data,
-        strum = strums[strums.active];
+      strum = strums[strums.active];
 
     // Okay, somewhat unexpected, but not totally unsurprising, a mouseclick is
     // considered a drag without move. So we have to deal with that case
@@ -211,11 +212,25 @@ function onDragEnd() {
     }
 
     brushed = selected(strums);
-    // console.log(brushed);
     strums.active = undefined;
+    updateCounter(brushed.length);
     renderBrushed(brushed);
+
     isBrushingActive = false;
+
+    hoverLines(brushed);
   };
+}
+
+function hoverLines(brushed) {
+  d3.select(".foreground").selectAll("path")
+    .on("mouseover", function(d) {
+      console.log(d);
+    })
+    .on("mouseout", () => {
+      console.log("nothing")
+    })
+    .on("click", () => console.log("CLICK"))
 }
 
 function renderBrushed(brushed) {
@@ -243,34 +258,37 @@ function applyDimensionDefaults(dims) {
   return newDims;
 };
 
+function crossesStrum(d, id) {  
+  var strum = strums[id],
+      test = containmentTest(strum, strums.width(id)),
+      d1 = strum.dims.left,
+      d2 = strum.dims.right,
+      y1 = dims[d1].yScale;
+      y2 = dims[d2].yScale;
+      point = [y1(d[d1]) - strum.minX, y2(d[d2]) - strum.minX];
+  return test(point);
+}
+
 function selected() {
   var ids = Object.getOwnPropertyNames(strums),
-      brushed = data;
+  brushed = data;
 
   // Get the ids of the currently active strums.
   ids = ids.filter(function(d) {
     return !isNaN(d);
   });
 
-  const dims = applyDimensionDefaults();
-
-  function crossesStrum(d, id) {  
-    var strum = strums[id],
-        test = containmentTest(strum, strums.width(id)),
-        d1 = strum.dims.left,
-        d2 = strum.dims.right,
-        y1 = dims[d1].yScale;
-        y2 = dims[d2].yScale;
-        point = [y1(d[d1]) - strum.minX, y2(d[d2]) - strum.minX];
-    return test(point);
-  }
+  dims = applyDimensionDefaults();
 
   if (ids.length === 0) { return brushed; }
   
-  
   return brushed.filter(function(d) {
+    if (predicate === 'AND') {
       return ids.every(function(id) { return crossesStrum(d, id); });
-    });
+    } else {
+      return ids.some(function(id) { return crossesStrum(d, id); });
+    }
+  });
 }
 
 
