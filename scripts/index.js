@@ -136,6 +136,7 @@ function drawParallelCoordinates() {
 
   d3.select("table").remove();
   d3.select(".entriesCount").remove();
+  d3.selectAll(".brush").remove();
 
   let arr = [];
 
@@ -161,8 +162,6 @@ function drawParallelCoordinates() {
       .attr("stroke", "#4c575d")
       .attr("opacity", 0.2);
 
-  d3.selectAll(".brush").remove();
-
   // Add blue foreground lines for focus.
   foreground = svg.append("g")
     .attr("class", "foreground")
@@ -183,9 +182,8 @@ function drawParallelCoordinates() {
       if (!isBrushingActive && selectedLines.length < 1 && !isDraggingActive) {
         //select all lines
        d3.selectAll("path")
-        .style("opacity", brushes.length < 1 && 0.005)
+        .style("opacity", d => (brushes.length > 0 && filteredData.includes(d)) ? 0.05 : 0.005)
         .style("cursor", "pointer")
-        .style("stroke", d => brushes.length > 0 && filteredData.includes(d) && "#4c575d");
         // select current line
         d3.select(this)
         .style("stroke", colors[i])
@@ -198,13 +196,11 @@ function drawParallelCoordinates() {
       }
     })
     .on("mouseout", function(d) {
-      const brushes = d3.selectAll(".brush")[0];
       if (!isBrushingActive && selectedLines.length < 1) {
         d3.selectAll("path")
           .style("opacity", 0.2)
-          .style("stroke", (d, i) => brushes.length > 0 && filteredData.includes(d) && colors[i]);
         d3.select(this)
-        .style("stroke", brushes.length > 0 ? "#4c575d" : "")
+        .style("stroke", "")
         .style("opacity", 0.2)
         .style("stroke-width", 1)
         .style("cursor", "default")
