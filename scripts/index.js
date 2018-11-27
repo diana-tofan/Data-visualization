@@ -8,6 +8,8 @@ let data = [];
 let columns = [];
 let selectedLines = [];
 
+let randomDatasetSelected = false;
+
 function loadFile() {
   const file = document.querySelector("input[type=file]").files[0];
   reader.addEventListener("load", parseFile, false);
@@ -16,12 +18,32 @@ function loadFile() {
   }
 }
 
+function selectRandomDataset() {
+  randomDatasetSelected = true;
+  parseFile();
+}
+
 function parseFile() {
-  data = d3.csv.parse(reader.result, function(d, i) {
+  if (randomDatasetSelected) {
+    d3.select(".random-dataset-button").style("background", "#4c575d");
+    d3.select(".inputFile+label").style("background", "transparent");
+    d3.csv("../datasets/cars.csv", function(csvData) {
+      data = csvData.map((d, i) => {
+        d.lineClicked = false;
+        d.id = i;
+        return d;
+      });
+    });
+    randomDatasetSelected = false;
+  } else {
+    d3.select(".inputFile+label").style("background", "#4c575d");
+    d3.select(".random-dataset-button").style("background", "transparent");
+    data = d3.csv.parse(reader.result, function(d, i) {
     d.lineClicked = false;
     d.id = i;
     return d;
-  });
+    });
+  }
 
   columns = d3.keys(data[0]).filter(item => item !== "lineClicked" && item !== "id");
 
@@ -126,9 +148,10 @@ function createSvg() {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", `0 0 ${width} ${height}`);
 }
-
 
 function drawParallelCoordinates(filteredData) {
   d3.select(".loading-spinner")

@@ -170,6 +170,11 @@ body {
   visibility: visible;
 }
 
+.button-group {
+  display: flex;
+  align-items: center;
+}
+
 .inputFile {
   width: 0.1px;
   height: 0.1px;
@@ -179,8 +184,8 @@ body {
   z-index: -1;
 }
 
-.inputFile+label {
-  max-width: 15%;
+.inputFile+label,
+.random-dataset-button {
   font-size: .9em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -194,12 +199,26 @@ body {
   margin: 10px 0 20px 0;
 }
 
+.random-dataset-button {
+  background: transparent;
+  margin-left: 30px;
+  height: 42px;
+  width: 140px;
+  text-align: left;
+  outline: none;
+}
+
+.random-dataset-button .fa-car {
+  margin-right: 10px;
+}
+
 label>span {
   margin-left: 10px;
 }
 
 .inputFile:focus+label,
-.inputFile+label:hover {
+.inputFile+label:hover,
+.random-dataset-button:hover {
   background-color: #4c575d;
 }
 

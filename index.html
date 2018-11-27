@@ -22,12 +22,17 @@
     <div class="content">
       <div class="section">
           <div>Load your data</div>
-          <div>
-              <input type="file" name="file" id="file" onchange="loadFile()" class="inputFile" />
-              <label for="file">
-                  <i class="fa fa-upload"></i>
-                  <span>Choose a file...</span>
-              </label>
+          <div class="button-group">
+              <div>
+                  <input type="file" name="file" id="file" onchange="loadFile()" class="inputFile" />
+                  <label for="file">
+                      <i class="fa fa-upload"></i>
+                      <span>Choose a file...</span>
+                  </label>
+              </div>
+              <button class="random-dataset-button" onclick="selectRandomDataset()">
+                  <i class="fas fa-car"></i>Car dataset
+              </button>
           </div>
         </div>
         <div class="section section2">
