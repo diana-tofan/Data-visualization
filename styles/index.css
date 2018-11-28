@@ -184,8 +184,7 @@ body {
   z-index: -1;
 }
 
-.inputFile+label,
-.random-dataset-button {
+.inputFile+label {
   font-size: .9em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -297,7 +296,8 @@ rect#strum-events {
 
 .search-box {
   margin: 20px 0 20px 6em;
-  display: flex;
+  display: none;
+  /* display: flex; */
   align-items: center;
 }
 
@@ -321,7 +321,8 @@ rect#strum-events {
   position: relative;
 }
 
-.fa-search {
+.fa-search,
+.fa-times {
   position: absolute;
   font-size: 12px;
   top: 8px;
