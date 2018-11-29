@@ -201,7 +201,7 @@ function drawStrum(strum, activePoint) {
 
 function onDragEnd() {
   return function() {
-    data = filteredData.length > 0 ? filteredData : data;
+    // data = filteredData.length > 0 ? filteredData : data;
     var brushed = data,
       strum = strums[strums.active];
 
