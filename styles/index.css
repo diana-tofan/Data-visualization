@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background-color: #3b4347;
+}
+
+#tooltip {
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+}
+
+.svg-elem {
+  text-align: center;
+}
+
+svg,
+pre {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background: #2f3438;
+  height: 7%;
+  font-size: .8em;
+  margin-bottom: 20px;
+}
+
+.icons {
+  margin-right: 6em;
+}
+
+.fa-github {
+  margin-right: 10px;
+}
+
+.fa-github,
+.fa-arrow-alt-circle-down {
+  color: white;
+}
+
+.title {
+  background: linear-gradient(to right, #adf6ff, #eeff84);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: .9;
+  font-family: 'Raleway';
+  font-size: 1.05em;
+  font-weight: bold;
+  margin-left: 6em;
+  text-transform: uppercase;
+}
+
+.content {
+  color: white;
+  font-size: 0.9em;
+  justify-content: center;
+}
+
+.section {
+  margin: 0 6em;
+}
+
+.upload-button {
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  width: 35%;
+  height: 8%;
+}
+
+body {
+  min-width: 760px;
+}
+
+.background path {
+  fill: none;
+  shape-rendering: crispEdges;
+}
+
+.foreground path {
+  fill: none;
+  opacity: 0.3;
+}
+
+.brush .extent {
+  fill-opacity: .3;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  fill: white;
+  font-size: 10px;
+  cursor: move;
+}
+
+.dropdown {
+  width: 100px;
+}
+
+.brushMode,
+.predicateMode {
+  display: none;
+  font-size: .9em;
+  color: white;
+}
+
+#btnReset,
+#btnReset:hover {
+  color: white;
+  border: solid 2px #4c575d;
+  padding: 4px 16px;
+  font-size: 1em;
+  border-radius: .5em;
+  outline: none;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.fa-undo {
+  margin-right: 10px;
+}
+
+#btnReset {
+  background: transparent;
+}
+
+#btnReset:hover {
+  background: #4c575d;
+}
+
+.predicateMode {
+  margin-left: 20px;
+}
+
+#brushMode,
+#predicateMode {
+  background: #2f3438;
+  color: white;
+  border: none;
+  font-size: 1em;
+  outline: none;
+  height: 28px;
+}
+
+.line-clicked {
+  opacity: 1;
+  color: red !important;
+}
+
+.data-name {
+  font-size: 10px;
+  color: white;
+  visibility: visible;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+}
+
+.inputFile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputFile+label {
+  font-size: .9em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.625rem 1.25rem;
+  color: white;
+  border: solid 2px #4c575d;
+  border-radius: 6px;
+  margin: 10px 0 20px 0;
+}
+
+.random-dataset-button {
+  background: transparent;
+  margin-left: 30px;
+  height: 42px;
+  width: 140px;
+  text-align: left;
+  outline: none;
+}
+
+.random-dataset-button .fa-car {
+  margin-right: 10px;
+}
+
+label>span {
+  margin-left: 10px;
+}
+
+.inputFile:focus+label,
+.inputFile+label:hover,
+.random-dataset-button:hover {
+  background-color: #4c575d;
+}
+
+.inputFile+label svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  fill: currentColor;
+  margin-top: -0.25em;
+  margin-right: 0.25em;
+}
+
+.section2 {
+  margin-bottom: 10px;
+}
+
+.dimension {
+  margin: 10px 20px;
+  background: #3b4347;
+  border: solid 2px #4c575d;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  font-size: .8em;
+}
+
+.selectedDimension {
+  background: #4c575d;
+}
+
+.resetChart button,
+.resetChart button:hover {
+  cursor: pointer;
+  color: white;
+  border-radius: 6px;
+  padding: 7px 40px;
+  font-size: .9em;
+  border: solid 2px #4C575D;
+  margin: 20px auto;
+  display: flex;
+  outline: none;
+}
+
+.resetChart button {
+  background: transparent;
+}
+
+.resetChart button:hover {
+  background: #4C575D;
+}
+
+.arc {
+  fill: #9c9c9c !important;
+}
+
+.extra {
+  margin: 30px 9em 0 6em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.entriesCount {
+  color: #9db2bd;
+}
+
+.strum {
+  fill: white;
+}
+
+rect#strum-events {
+  fill: none;
+  pointer-events: all;
+}
+
+.search-box {
+  margin: 20px 0 20px 6em;
+  display: none;
+  /* display: flex; */
+  align-items: center;
+}
+
+.search-box span {
+  margin-right: 10px;
+}
+
+.search-box #search {
+  background: transparent;
+  border: solid 2px #4C575D;
+  padding: 10px;
+  width: 200px;
+  border-radius: 6px;
+  outline: none;
+  color: white;
+  opacity: 0;
+  height: 28px;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.fa-search,
+.fa-times {
+  position: absolute;
+  font-size: 12px;
+  top: 8px;
+  right: 0;
+  opacity: 0;
+}

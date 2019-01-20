@@ -1,21 +1,70 @@
 <html>
   <head>
-    <link rel="stylesheet" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="./styles/tableStyling.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   </head>
   <body>
     <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="./scripts/brushing/1Dmultibrush.js"></script>
+    <script src="./scripts/brushing/2Dlines.js"></script>
+    <script src="./scripts/brushing/angular.js"></script>
     <header class="header">
-      <span class="title">
-          Data visualization project
-      </span>
+      <div class="title">Advanced Project in Digital Media Engineering</div>
+      <div class="icons">
+        <a href="https://github.com/diana-tofan/Data-visualization"> <i class="fab fa-github fa-2x"></i></a>
+        <a href="http://bl.ocks.org/d/3156751/cars.csv"> <i class="fas fa-arrow-alt-circle-down fa-2x"></i></a>
+      </div>
     </header>
-    <!-- <div class="content"> -->
-        <!-- <form enctype="multipart/form-data" action="/upload/image" method="post">
-          <input id="image-file" type="file" value="Upload" />
-        </form> -->
-        <!-- <button class="upload-button">Upload</button> -->
-    <!-- </div> -->
-    <script src="./index.js"></script>
-    <script src="./renderQueue.js"></script>
+    <div class="content">
+      <div class="section">
+          <div>Load your data</div>
+          <div class="button-group">
+              <div>
+                  <input type="file" name="file" id="file" onchange="loadFile()" class="inputFile" />
+                  <label for="file">
+                      <i class="fa fa-upload"></i>
+                      <span>Choose a file...</span>
+                  </label>
+              </div>
+          </div>
+        </div>
+        <div class="section section2">
+        </div>
+        <div class="svg-elem"></div>
+        <script src="./scripts/index.js"></script>
+        <div class="extra">
+          <div>
+              <p class="brushMode">
+                  <label for="brushMode">Brush mode:</label>
+                  <select id="brushMode">
+                    <option>None</option>
+                    <option>Simple</option>
+                    <option>Multiple</option>
+                    <option>Lines</option>
+                    <option>Angles</option>
+                  </select>
+                  <button id="btnReset"><i class="fas fa-undo"></i>Reset brushes</button>
+                </p>
+                <span class="predicateMode">
+                    <label for="predicateMode">Predicate:</label>
+                    <select id="predicateMode">
+                      <option>AND</option>
+                      <option>OR</option>
+                    </select>
+                </span>
+          </div>
+        </div>
+        <div class="search-box">
+          <span></span>
+          <div class="wrapper"><input type="text" id="search"><span class="fas fa-search"></span></div>
+        </div>
+        <div class="section data-name table"><p></p></div>
+        <div class="resetChart"></div>
+    </div>
+  <script src="./scripts/uploadFile.js"></script>
   </body>
 </html>
