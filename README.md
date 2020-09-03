@@ -1,4 +1,4 @@
 # Data-visualization
-Brushing techniques for exploring parallel coordinates
+Highly interactive parallel coordinates generated from input .csv datasets
 
 ![Screenshot](screenshot.png)
